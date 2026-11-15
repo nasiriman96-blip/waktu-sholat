@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.webkit.JavascriptInterface;
+import org.json.JSONArray;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -31,6 +35,8 @@ public class MainActivity extends Activity {
         s.setAllowFileAccess(true);
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setTextZoom(100);
+
+        web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
         web.setWebViewClient(new WebViewClient() {
             @Override
@@ -61,6 +67,26 @@ public class MainActivity extends Activity {
             web.restoreState(savedInstanceState);
         } else {
             web.loadUrl("file:///android_asset/index.html");
+        }
+    }
+
+    private class Bridge {
+        @JavascriptInterface
+        public void vibrate(String json) {
+            try {
+                Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                if (v == null || !v.hasVibrator()) return;
+                JSONArray a = new JSONArray(json);
+                long[] p = new long[a.length() + 1];
+                p[0] = 0;
+                for (int i = 0; i < a.length(); i++) p[i + 1] = a.getLong(i);
+                if (p.length == 2) {
+                    v.vibrate(VibrationEffect.createOneShot(p[1], VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    v.vibrate(VibrationEffect.createWaveform(p, -1));
+                }
+            } catch (Exception ignored) {
+            }
         }
     }
 

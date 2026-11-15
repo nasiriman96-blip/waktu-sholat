@@ -416,7 +416,7 @@ var KAABA={lat:21.4225,lng:39.8262};
   var DZIKIR=[];SECTIONS.forEach(function(s,si){s.items.forEach(function(it){DZIKIR.push(Object.assign({},it,{sectionIndex:si}))})});
 
 /* ---------- Penyimpanan ---------- */
-var DEF={city:CITIES[0],method:'kemenag',asr:'shafi',adj:{fajr:0,sunrise:0,dhuhr:0,asr:0,maghrib:0,isha:0},hijriAdj:0,h24:true,theme:'auto',alerts:{fajr:true,dhuhr:true,asr:true,maghrib:true,isha:true},sound:false,done:{},zdone:{}};
+var DEF={city:CITIES[0],method:'kemenag',asr:'shafi',adj:{fajr:0,sunrise:0,dhuhr:0,asr:0,maghrib:0,isha:0},hijriAdj:0,h24:true,theme:'auto',alerts:{fajr:true,dhuhr:true,asr:true,maghrib:true,isha:true},sound:false,vibrate:true,done:{},zdone:{}};
 var S=JSON.parse(JSON.stringify(DEF));
 try{var raw=localStorage.getItem('waktu-sholat-v1');if(raw){var o=JSON.parse(raw);for(var k in o)S[k]=o[k]}}catch(e){}
 function save(){try{localStorage.setItem('waktu-sholat-v1',JSON.stringify(S))}catch(e){}}
@@ -718,7 +718,8 @@ function setHTML(){
    +'<div class="it"><div class="l"><b>Tema</b></div><div class="seg">'+[['auto','Otomatis'],['light','Terang'],['dark','Gelap']].map(function(t){return '<button data-set="theme" data-v="'+t[0]+'" class="'+(S.theme===t[0]?'on':'')+'">'+t[1]+'</button>'}).join('')+'</div></div>'
    +'<div class="it"><div class="l"><b>Format jam</b></div><div class="seg"><button data-set="h24" data-v="1" class="'+(S.h24?'on':'')+'">24 jam</button><button data-set="h24" data-v="0" class="'+(!S.h24?'on':'')+'">12 jam</button></div></div></div>';
   h+='<h2>Pengingat</h2><div class="card set"><div class="it"><div class="l"><b>Bunyi saat waktu masuk</b><small>Berbunyi dan menampilkan pesan selama halaman ini terbuka. Atur tiap sholat dengan ikon lonceng di Beranda. Nada ini pengingat singkat, bukan rekaman adzan.</small></div><button class="sw'+(S.sound?' on':'')+'" data-act="sound" role="switch" aria-checked="'+S.sound+'" aria-label="Bunyi pengingat"></button></div>'
-   +'<div class="it"><div class="l"><b>Uji nada</b></div><button class="btn ghost" data-act="test">Putar</button></div></div>';
+   +'<div class="it"><div class="l"><b>Uji nada</b></div><button class="btn ghost" data-act="test">Putar</button></div>'
+   +'<div class="it"><div class="l"><b>Getar saat zikir</b><small>Getar halus tiap hitungan dan getar kuat saat pindah ke bacaan berikutnya.</small></div><button class="sw'+(S.vibrate!==false?' on':'')+'" data-act="vibtog" role="switch" aria-checked="'+(S.vibrate!==false)+'" aria-label="Getar saat zikir"></button></div></div>';
   return h;
 }
 function fillTZ(){var dl=$('tzl');if(!dl)return;try{(Intl.supportedValuesOf('timeZone')||[]).forEach(function(z){var o=document.createElement('option');o.value=z;dl.appendChild(o)})}catch(e){}}
@@ -732,6 +733,14 @@ function cityList(q){
 var ZP=[['fajr','Subuh'],['dhuhr','Dzuhur'],['asr','Ashar'],['maghrib','Maghrib'],['isha','Isya']];
 var zsel=null,zs=null,RR=88,CIRC=2*Math.PI*RR;
 function todayIso(){var n=nowLoc();return iso(n.y,n.m,n.d)}
+function vib(p){
+  if(S.vibrate===false)return;
+  try{
+    var a=Array.isArray(p)?p:[p];
+    if(window.AndroidBridge&&AndroidBridge.vibrate)AndroidBridge.vibrate(JSON.stringify(a));
+    else if(navigator.vibrate)navigator.vibrate(a);
+  }catch(e){}
+}
 function zDone(is){return (S.zdone&&S.zdone[is])||{}}
 function zStreak(){
   var n=nowLoc(),c=0,o=0;
@@ -771,7 +780,7 @@ function zRender(){
   if(zs.idx>=DZIKIR.length){
     var is=todayIso();S.zdone=S.zdone||{};S.zdone[is]=S.zdone[is]||{};S.zdone[is][zs.p]=true;
     var ks=Object.keys(S.zdone).sort();if(ks.length>90)delete S.zdone[ks[0]];save();
-    try{if(navigator.vibrate)navigator.vibrate([50,80,50,80,120])}catch(e){}
+    vib([60,70,60,70,160]);
     o.innerHTML='<div class="zin"><div class="ztop"><b>Zikir '+pn+'</b><button class="ib" data-act="zclose" aria-label="Tutup">'+ico('x',22,2)+'</button></div><div class="zdone"><div class="bd">'+ico('check',38,2.4)+'</div><h2>Alhamdulillah</h2><p>Zikir ba\u2019da '+pn+' selesai. Semoga Allah menerima zikir Anda.</p></div><div class="zfoot"><button class="btn" data-act="zclose">Kembali</button></div></div>';
     return;
   }
@@ -790,8 +799,8 @@ function zTap(n){
   zs.count=Math.min(d.target,zs.count+n);
   var fg=$('zfg'),c=$('zc');
   if(fg)fg.style.strokeDashoffset=CIRC-Math.min(zs.count/d.target,1)*CIRC;if(c)c.textContent=zs.count;
-  try{if(navigator.vibrate)navigator.vibrate(zs.count>=d.target?[40,60,90]:15)}catch(e){}
-  if(zs.count>=d.target){zs.lock=true;setTimeout(function(){if(!zs)return;zs.idx++;zs.count=0;zs.lock=false;zRender();var b=$('zbody');if(b)b.scrollTop=0},420)}
+  vib(zs.count>=d.target?[40,50,40]:12);
+  if(zs.count>=d.target){zs.lock=true;setTimeout(function(){if(!zs)return;zs.idx++;zs.count=0;zs.lock=false;if(zs.idx<DZIKIR.length)vib([90,70,90]);zRender();var b=$('zbody');if(b)b.scrollTop=0},420)}
 }
 
 /* ---------- Utama ---------- */
@@ -858,6 +867,7 @@ document.addEventListener('click',function(ev){
   else if(a==='adj'){S.adj[k]=Math.max(-30,Math.min(30,(S.adj[k]||0)+d));cache={};save();render()}
   else if(a==='hadj'){S.hijriAdj=Math.max(-3,Math.min(3,S.hijriAdj+d));save();render()}
   else if(a==='sound'){S.sound=!S.sound;save();if(S.sound)chime();render()}
+  else if(a==='vibtog'){S.vibrate=!(S.vibrate!==false);save();if(S.vibrate)vib([90,70,90]);render()}
   else if(a==='test'){if(!chime())toast('Perangkat ini tidak dapat memutar suara.')}
   else if(a==='compass')startCompass();
   else if(a==='kmode'){kmode=k;try{history.replaceState(null,'','#kalender')}catch(e){}render()}
@@ -865,8 +875,8 @@ document.addEventListener('click',function(ev){
   else if(a==='zstart')zOpen(+t.dataset.s);
   else if(a==='zclose')zClose();
   else if(a==='ztap')zTap(+t.dataset.n);
-  else if(a==='zskip'&&zs){zs.idx++;zs.count=0;zRender()}
-  else if(a==='zprev'&&zs){if(zs.count>0)zs.count=0;else zs.idx=Math.max(0,zs.idx-1);zRender()}
+  else if(a==='zskip'&&zs){zs.idx++;zs.count=0;vib(30);zRender()}
+  else if(a==='zprev'&&zs){if(zs.count>0)zs.count=0;else zs.idx=Math.max(0,zs.idx-1);vib(30);zRender()}
   else if(a==='gps'){
     if(!navigator.geolocation){toast('Perangkat tidak mendukung lokasi. Pilih kota atau isi koordinat.');return}
     navigator.geolocation.getCurrentPosition(function(p){
