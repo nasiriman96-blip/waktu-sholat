@@ -11,12 +11,31 @@
 <style>
 /* Layout: satu kolom seluler. Panel kaca gelap berlatar cahaya hijau, navigasi mengambang dengan pil mint yang meluncur, perpindahan halaman berkabur. */
 :root{
-  --bg:#050A08; --panel:rgba(255,255,255,.045); --panel2:rgba(255,255,255,.075); --line:rgba(255,255,255,.085);
-  --fg:#E9F4EE; --muted:#84A092; --accent:#7BEFB2; --accent-ink:#03160C; --accent-soft:rgba(123,239,178,.14);
+  --bg:#EDF5F0; --pa:rgba(255,255,255,.82); --pb:rgba(255,255,255,.5); --panel:rgba(10,60,40,.045); --panel2:rgba(10,60,40,.07); --line:rgba(10,60,40,.11);
+  --fg:#0B2018; --muted:#58736A; --accent:#0B7A55; --accent-ink:#FFFFFF; --accent-soft:rgba(11,122,85,.12); --accent-glow:rgba(11,122,85,.28);
+  --track:rgba(10,60,40,.1); --ring:rgba(10,60,40,.22); --hl:rgba(255,255,255,.9); --shadow:rgba(20,70,50,.12);
+  --navbg:rgba(255,255,255,.78); --navshadow:rgba(20,70,50,.18); --toastbg:rgba(255,255,255,.96);
+  --glow1:#A9E4C6; --glow2:#CBEFDB; --glow3:#B7E9D0; --glow-op:.85; --zg1:rgba(150,225,190,.55); --zg2:rgba(185,235,208,.6); --danger:#C23B2B;
+  color-scheme:light;
   --font-display:"Outfit","Inter",system-ui,sans-serif;
   --font-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-ar:"Amiri","Noto Naskh Arabic",serif;
   --ease:cubic-bezier(.3,.8,.2,1);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#050A08; --pa:rgba(255,255,255,.065); --pb:rgba(255,255,255,.025); --panel:rgba(255,255,255,.045); --panel2:rgba(255,255,255,.075); --line:rgba(255,255,255,.085);
+  --fg:#E9F4EE; --muted:#84A092; --accent:#7BEFB2; --accent-ink:#03160C; --accent-soft:rgba(123,239,178,.14); --accent-glow:rgba(123,239,178,.25);
+  --track:rgba(255,255,255,.1); --ring:rgba(255,255,255,.18); --hl:rgba(255,255,255,.06); --shadow:rgba(0,0,0,.28);
+  --navbg:rgba(14,26,21,.72); --navshadow:rgba(0,0,0,.5); --toastbg:rgba(20,36,29,.92);
+  --glow1:#1D6B49; --glow2:#15523A; --glow3:#0F4533; --glow-op:.55; --zg1:rgba(29,107,73,.5); --zg2:rgba(15,69,51,.5); --danger:#FF9D8F;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#050A08; --pa:rgba(255,255,255,.065); --pb:rgba(255,255,255,.025); --panel:rgba(255,255,255,.045); --panel2:rgba(255,255,255,.075); --line:rgba(255,255,255,.085);
+  --fg:#E9F4EE; --muted:#84A092; --accent:#7BEFB2; --accent-ink:#03160C; --accent-soft:rgba(123,239,178,.14); --accent-glow:rgba(123,239,178,.25);
+  --track:rgba(255,255,255,.1); --ring:rgba(255,255,255,.18); --hl:rgba(255,255,255,.06); --shadow:rgba(0,0,0,.28);
+  --navbg:rgba(14,26,21,.72); --navshadow:rgba(0,0,0,.5); --toastbg:rgba(20,36,29,.92);
+  --glow1:#1D6B49; --glow2:#15523A; --glow3:#0F4533; --glow-op:.55; --zg1:rgba(29,107,73,.5); --zg2:rgba(15,69,51,.5); --danger:#FF9D8F;
   color-scheme:dark;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -27,15 +46,15 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .num{font-variant-numeric:tabular-nums}
 .ar{font-family:var(--font-ar)}
 #glow{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:var(--bg)}
-#glow i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;animation:drift 22s ease-in-out infinite alternate}
-#glow i:nth-child(1){width:70vmax;height:55vmax;left:-25vmax;top:-18vmax;background:radial-gradient(closest-side,#1D6B49,transparent)}
-#glow i:nth-child(2){width:60vmax;height:50vmax;right:-28vmax;top:22vh;background:radial-gradient(closest-side,#15523A,transparent);animation-duration:28s;animation-delay:-8s}
-#glow i:nth-child(3){width:65vmax;height:50vmax;left:-10vmax;bottom:-24vmax;background:radial-gradient(closest-side,#0F4533,transparent);animation-duration:25s;animation-delay:-14s}
+#glow i{position:absolute;border-radius:50%;filter:blur(70px);opacity:var(--glow-op);animation:drift 22s ease-in-out infinite alternate}
+#glow i:nth-child(1){width:70vmax;height:55vmax;left:-25vmax;top:-18vmax;background:radial-gradient(closest-side,var(--glow1),transparent)}
+#glow i:nth-child(2){width:60vmax;height:50vmax;right:-28vmax;top:22vh;background:radial-gradient(closest-side,var(--glow2),transparent);animation-duration:28s;animation-delay:-8s}
+#glow i:nth-child(3){width:65vmax;height:50vmax;left:-10vmax;bottom:-24vmax;background:radial-gradient(closest-side,var(--glow3),transparent);animation-duration:25s;animation-delay:-14s}
 @keyframes drift{to{transform:translate3d(6vmax,4vmax,0) scale(1.08)}}
 #app{max-width:520px;margin:0 auto}
 
 /* Panel kaca */
-.panel{background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.025));border:1px solid var(--line);border-radius:22px;backdrop-filter:blur(22px) saturate(1.25);-webkit-backdrop-filter:blur(22px) saturate(1.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 12px 40px rgba(0,0,0,.28)}
+.panel{background:linear-gradient(180deg,var(--pa),var(--pb));border:1px solid var(--line);border-radius:22px;backdrop-filter:blur(22px) saturate(1.25);-webkit-backdrop-filter:blur(22px) saturate(1.25);box-shadow:inset 0 1px 0 var(--hl),0 12px 40px var(--shadow)}
 .pad{padding:20px}
 .stack{display:flex;flex-direction:column;gap:12px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -48,7 +67,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .hd h1{font:300 clamp(30px,9vw,38px)/1.1 var(--font-display);letter-spacing:-.02em;margin:6px 0 6px}
 .hd h1 b{font-weight:500}
 .hd p{margin:0;color:var(--muted);font-size:14px}
-.logo{width:48px;height:48px;border-radius:16px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:400 26px/1 var(--font-ar);flex:none;box-shadow:0 8px 30px rgba(123,239,178,.25)}
+.logo{width:48px;height:48px;border-radius:16px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:400 26px/1 var(--font-ar);flex:none;box-shadow:0 8px 30px var(--accent-glow)}
 h2.t{font:400 13px/1 var(--font-body);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:26px 4px 12px}
 
 /* Beranda */
@@ -58,15 +77,15 @@ h2.t{font:400 13px/1 var(--font-body);letter-spacing:.09em;text-transform:upperc
 .big .ar{font-size:30px;color:var(--accent)}
 .chips{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:18px}
 .chips button{position:relative;display:flex;flex-direction:column;align-items:center;gap:7px;padding:11px 0 10px;border-radius:14px;background:var(--panel);border:1px solid var(--line);font-size:12px;font-weight:500;color:var(--muted);min-width:0;transition:background .25s,color .25s,border-color .25s}
-.chips button i{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.18);display:grid;place-items:center;color:var(--accent-ink);transition:.25s}
-.chips button.on{border-color:rgba(123,239,178,.55);color:var(--fg);background:var(--accent-soft)}
+.chips button i{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--ring);display:grid;place-items:center;color:var(--accent-ink);transition:.25s}
+.chips button.on{border-color:var(--accent);color:var(--fg);background:var(--accent-soft)}
 .chips button.ok i{background:var(--accent);border-color:var(--accent)}
-.btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:54px;border-radius:16px;background:var(--accent);color:var(--accent-ink);font:500 16px var(--font-display);letter-spacing:.01em;box-shadow:0 10px 34px rgba(123,239,178,.22);transition:transform .15s}
+.btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:54px;border-radius:16px;background:var(--accent);color:var(--accent-ink);font:500 16px var(--font-display);letter-spacing:.01em;box-shadow:0 10px 34px var(--accent-glow);transition:transform .15s}
 .btn:active{transform:scale(.985)}
 .btn.ghost{background:var(--panel2);color:var(--fg);box-shadow:none;border:1px solid var(--line);min-height:48px;width:auto;padding:0 20px}
 .stat .v{font:300 36px/1 var(--font-display);letter-spacing:-.02em;margin:10px 0 4px}
 .stat .v span{font-size:15px;color:var(--muted);margin-left:4px;font-weight:400}
-.meter{height:4px;border-radius:9px;background:rgba(255,255,255,.08);margin-top:12px;overflow:hidden}
+.meter{height:4px;border-radius:9px;background:var(--track);margin-top:12px;overflow:hidden}
 .meter i{display:block;height:100%;background:var(--accent);border-radius:9px;transition:width .8s var(--ease)}
 .info{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:16px 20px;color:var(--muted);font-size:13.5px}
 .info b{color:var(--fg);font-weight:500}
@@ -91,38 +110,38 @@ h2.t{font:400 13px/1 var(--font-body);letter-spacing:.09em;text-transform:upperc
 .row:first-child{border-top:0}
 .row b{display:block;font-weight:500}
 .row small{color:var(--muted);font-size:12.5px;line-height:1.4;display:block;margin-top:2px}
-.sw{width:50px;height:30px;border-radius:99px;background:rgba(255,255,255,.12);position:relative;flex:none;transition:background .25s}
+.sw{width:50px;height:30px;border-radius:99px;background:var(--track);position:relative;flex:none;transition:background .25s}
 .sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .3s var(--ease)}
 .sw.on{background:var(--accent)}
 .sw.on::after{transform:translateX(20px);background:var(--accent-ink)}
-.seg{display:inline-flex;background:rgba(255,255,255,.06);border-radius:12px;padding:3px;flex:none}
+.seg{display:inline-flex;background:var(--panel);border-radius:12px;padding:3px;flex:none}
 .seg button{padding:8px 13px;border-radius:9px;font-weight:500;font-size:13.5px;color:var(--muted);min-height:36px;transition:.25s}
 .seg button.on{background:var(--accent);color:var(--accent-ink)}
-.danger{color:#FF9D8F}
+.danger{color:var(--danger)}
 .preview{padding:18px;text-align:center;font-family:var(--font-ar);direction:rtl;line-height:2.1;border-top:1px solid var(--line)}
 .note{font-size:13px;color:var(--muted);line-height:1.55}
 
 /* Navigasi mengambang dengan pil meluncur */
 nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(calc(100% - 32px),488px);z-index:20}
-#navin{position:relative;display:grid;grid-template-columns:repeat(3,1fr);padding:6px;border-radius:24px;background:rgba(14,26,21,.72);border:1px solid var(--line);backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);box-shadow:0 16px 50px rgba(0,0,0,.5)}
-#pill{position:absolute;top:6px;bottom:6px;left:6px;right:6px;border-radius:18px;background:var(--accent);box-shadow:0 6px 22px rgba(123,239,178,.3);transition-property:left,right;transition-timing-function:var(--ease);transition-duration:.5s,.5s;z-index:0}
+#navin{position:relative;display:grid;grid-template-columns:repeat(3,1fr);padding:6px;border-radius:24px;background:var(--navbg);border:1px solid var(--line);backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);box-shadow:0 16px 50px var(--navshadow)}
+#pill{position:absolute;top:6px;bottom:6px;left:6px;right:6px;border-radius:18px;background:var(--accent);box-shadow:0 6px 22px var(--accent-glow);transition-property:left,right;transition-timing-function:var(--ease);transition-duration:.5s,.5s;z-index:0}
 #navin button{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border-radius:18px;color:var(--muted);font:500 14px var(--font-display);transition:color .3s;min-width:0}
 #navin button.on{color:var(--accent-ink)}
 #navin svg{flex:none}
-#toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);background:rgba(20,36,29,.92);border:1px solid var(--line);color:var(--fg);padding:11px 16px;border-radius:14px;font-weight:500;font-size:14px;opacity:0;pointer-events:none;transition:.3s var(--ease);max-width:min(92vw,440px);text-align:center;z-index:60;backdrop-filter:blur(16px)}
+#toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);background:var(--toastbg);border:1px solid var(--line);color:var(--fg);padding:11px 16px;border-radius:14px;font-weight:500;font-size:14px;opacity:0;pointer-events:none;transition:.3s var(--ease);max-width:min(92vw,440px);text-align:center;z-index:60;backdrop-filter:blur(16px)}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 
 /* Sesi zikir */
 #zov{position:fixed;inset:0;z-index:40;background:var(--bg);display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px);--zs:1}
 #zov.open{display:flex}
-#zov::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(70% 40% at 15% 0%,rgba(29,107,73,.5),transparent 70%),radial-gradient(60% 40% at 100% 100%,rgba(15,69,51,.5),transparent 70%)}
+#zov::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(70% 40% at 15% 0%,var(--zg1),transparent 70%),radial-gradient(60% 40% at 100% 100%,var(--zg2),transparent 70%)}
 .zin{width:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;flex:1;min-height:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .ztop{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 0 12px}
 .ztop b{font:400 18px var(--font-display)}
 .ztop b span{color:var(--muted);margin-right:6px;font-weight:300}
 .ib{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:var(--panel2);border:1px solid var(--line)}
 .zprog{display:flex;gap:5px}
-.zprog div{flex:1;height:3px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden}
+.zprog div{flex:1;height:3px;border-radius:9px;background:var(--track);overflow:hidden}
 .zprog i{display:block;height:100%;background:var(--accent);transition:width .4s var(--ease)}
 .zmeta{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:12.5px;padding:10px 0 0}
 .zbody{flex:1;overflow-y:auto;text-align:center;padding:24px 0 20px;-webkit-overflow-scrolling:touch}
@@ -140,13 +159,13 @@ nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(sa
 .zring:active{transform:scale(.96)}
 .zring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .zring circle{fill:none;stroke-width:6}
-.zring .bg{stroke:rgba(255,255,255,.09)}
-.zring .fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .25s;filter:drop-shadow(0 0 8px rgba(123,239,178,.5))}
+.zring .bg{stroke:var(--track)}
+.zring .fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .25s;filter:drop-shadow(0 0 8px var(--accent-glow))}
 .zring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .zring .c b{font:300 40px/1 var(--font-display);font-variant-numeric:tabular-nums}
 .zring .c span{color:var(--muted);font-size:12.5px;margin-top:4px}
 .zdone{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;gap:10px;padding:20px}
-.zdone .bd{width:80px;height:80px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;box-shadow:0 0 60px rgba(123,239,178,.4)}
+.zdone .bd{width:80px;height:80px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;box-shadow:0 0 60px var(--accent-glow)}
 .zdone h2{font:300 32px var(--font-display);margin:12px 0 0;letter-spacing:-.01em}
 .zdone p{color:var(--muted);max-width:320px;margin:0}
 .zfoot{display:flex;gap:10px;padding:12px 0 calc(16px + env(safe-area-inset-bottom,0px))}
@@ -213,7 +232,7 @@ nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(sa
   };
 
   const SECTIONS = [
-    { title: "Bagian 1 · Zikir Pembuka", items: [
+    { title: "Bagian 1 · Zikir Agung", items: [
       { ...FATEHAH, target:1 },
       { bismillah:false, ayat:[`أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، أَبُو بَكْرٍ الصِّدِّيقُ، عُمَرُ الْفَارُوقُ، عُثْمَانُ بَرٌّ رَحِيمٌ، عَلِيٌّ عَضُدُ الدِّينِ، مُحَمَّدٌ الْمَهْدِيُّ خُلَفَاءُ رَسُولِ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ`],
         meaning:`Aku menyaksikan bahawa tiada Tuhan yang sebenar melainkan Allah dan aku menyaksikan bahawa Muhammad itu pesuruh Allah. Abu Bakar yang sangat kuat membenarkan Islam, Umar yang dapat membezakan antara baik dan jahat, Utsman yang amat taat kepada Tuhan yang Maha Penyayang, Ali yang menjadi penyokong agama, Muhammad Imamul Mahdi, kesemuanya khalifah-khalifah Rasulullah SAW.`, target:10 },
@@ -247,7 +266,7 @@ nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(sa
         meaning:`Katakanlah: "Siapakah Tuhan yang memelihara dan mentadbirkan langit dan bumi?" Jawablah: "Allah." Bertanyalah lagi: "Kalau demikian, patutkah engkau menjadikan selain Allah sebagai pelindung dan penolong, yang tidak dapat mendatangkan sebarang manfaat bagi dirinya sendiri dan tidak dapat menolak sesuatu bahaya?" Katakanlah lagi: "Apakah sama orang yang buta dengan orang yang celik? Atau apakah sama gelap gelita dengan cahaya terang? Atau adakah makhluk-makhluk yang mereka jadikan sekutu bagi Allah itu telah mencipta seperti ciptaan Allah, sehingga ciptaan-ciptaan itu menjadi kesamaran bagi mereka?" Katakanlah: "Allah jualah yang menciptakan tiap-tiap sesuatu, dan Dialah yang Maha Esa lagi Maha Perkasa." (Ar-Ra'd: 16)`, target:1 },
       { bismillah:false, ayat:[`قَيُّومٌ يَرْزُقُ مَنْ يَشَاءُ الْقُوَّةَ`], meaning:`Allah Maha Kekal selama-lamanya, mengurniakan kekuatan kepada sesiapa yang dikehendaki-Nya.`, target:3 },
     ]},
-    { title: "Bagian 3 · Zikir Pelindung Diri", items: [
+    { title: "Bagian 3 · Zikir Ayat Kursiy", items: [
       { ...FATEHAH, target:1 },
       { taawwudz:`أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ`, bismillah:true, ayat:[`اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ، لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ، لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ، مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ، يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ، وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ، وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ`],
         meaning:`Aku berlindung dengan Allah dari syaitan yang terkutuk. Dengan nama Allah yang Maha Pemurah lagi Maha Penyayang. Allah, tiada Tuhan melainkan Dia, yang hidup dan mencukupi dengan sendirinya. Dia tidak mengantuk atau tidur. Dia menguasai segala yang ada di langit dan bumi. Tidak boleh menolong di sisi-Nya melainkan dengan izin-Nya. Dia tahu apa yang di hadapan dan di belakang mereka, dan mereka tidak boleh tahu apa-apa dari ilmu-Nya melainkan dengan kehendak-Nya. Takhta kerajaan-Nya seluas langit dan bumi. Dia tidak penat memelihara keduanya kerana Dia Maha Kuasa lagi Maha Besar. (Al-Baqarah: 255)`, target:3, note:'Dibaca dalam satu nafas' },
@@ -272,7 +291,7 @@ nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(sa
       { bismillah:false, ayat:[`أُحْضُرُوا يَا سَيِّدِي الشَّيْخَ مُحَمَّدَ السُّحَيْمِيَّ`],
         meaning:`Wahai Saiyidi Syeikh Muhammad As-Suhaimi; saya mintalah diajarkan kepada saya karamah pencak sunda dan dipagarkan badan saya daripada musuh dan senjata dengan izin Allah Taala.`, target:3, note:'Dibaca 3 kali dalam satu nafas' },
     ]},
-    { title: "Bagian 4 · Zikir Agung (Inti)", items: [
+    { title: "Bagian 4 · Zikir Ayat “Laqad Jaa akum”", items: [
       { ...FATEHAH, target:1 },
       { ...TAUBAH, target:40 },
       { ...GABUNGAN, target:40 },
@@ -292,7 +311,7 @@ nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(sa
 
 
 /* ---------- Penyimpanan ---------- */
-var S={vibrate:true,font:'m',zdone:{}};
+var S={vibrate:true,font:'m',theme:'auto',zdone:{}};
 try{var raw=localStorage.getItem('waktu-sholat-v1');if(raw){var o=JSON.parse(raw);for(var k in o)S[k]=o[k]}}catch(e){}
 function save(){try{localStorage.setItem('waktu-sholat-v1',JSON.stringify(S))}catch(e){}}
 function $(id){return document.getElementById(id)}
@@ -302,7 +321,7 @@ function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate
 function todayIso(){return iso(new Date())}
 var HARI=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 var BULAN=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-var ZP=[['fajr','Subuh','الفجر'],['dhuhr','Dzuhur','الظهر'],['asr','Ashar','العصر'],['maghrib','Maghrib',''],['isha','Isya','العشاء']];
+var ZP=[['fajr','Subuh','الفجر'],['dhuhr','Dzuhur','الظهر'],['asr','Ashar','العصر'],['maghrib','Maghrib','المغrib'],['isha','Isya','العشاء']];
 ZP[3][2]='المغرب';
 
 /* ---------- Ikon ---------- */
@@ -345,7 +364,7 @@ function greet(){var h=new Date().getHours();return h>=4&&h<11?'pagi':h<15?'sian
 var view='zikir',TABS=[['zikir','Zikir','book'],['bacaan','Bacaan','list'],['setelan','Setelan','sliders']];
 function homeHTML(){
   if(!zsel)zsel=S.last||guess();
-  var d=zDone(todayIso()),cnt=ZP.filter(function(p){return d[p[0]]}).length,total=DZIKIR.reduce(function(a,x){return a+x.target},0);
+  var d=zDone(todayIso()),cnt=ZP.filter(function(p){return d[p[0]]}).length;
   var cur=ZP.filter(function(p){return p[0]===zsel})[0],now=new Date();
   var h='<header class="hd rise"><div><small>'+HARI[now.getDay()]+', '+now.getDate()+' '+BULAN[now.getMonth()]+' '+now.getFullYear()+'</small><h1>Selamat <b>'+greet()+'</b></h1><p>Mari tunaikan zikir ba’da sholat.</p></div><div class="logo ar" aria-hidden="true">ذِكْر</div></header>';
   h+='<section class="panel pad rise" style="--i:1"><div class="lab">Zikir ba’da</div><div class="big"><b>'+cur[1]+'</b><span class="ar">'+cur[2]+'</span></div>'
@@ -353,7 +372,6 @@ function homeHTML(){
    +'<button class="btn" data-act="zstart" data-s="0">'+ico('play',18)+(d[zsel]?'Ulangi zikir ba’da '+cur[1]:'Mulai zikir ba’da '+cur[1])+'</button></section>';
   h+='<div class="grid2" style="margin-top:12px"><section class="panel pad stat rise" style="--i:2"><div class="lab">Hari ini</div><div class="v num">'+cnt+'<span>dari 5</span></div><div class="meter"><i style="width:'+(cnt*20)+'%"></i></div></section>'
    +'<section class="panel pad stat rise" style="--i:3"><div class="lab">Berturut-turut</div><div class="v num">'+zStreak()+'<span>hari</span></div><div class="meter"><i style="width:'+Math.min(100,zStreak()*100/7)+'%"></i></div></section></div>';
-  h+='<section class="panel info rise" style="--i:4" style="margin-top:12px"><span><b class="num">'+DZIKIR.length+'</b> bacaan</span><span><b class="num">'+total+'</b> hitungan</span><span><b class="num">'+SECTIONS.length+'</b> bagian</span></section>';
   return h;
 }
 function bacaanHTML(){
@@ -368,8 +386,9 @@ function bacaanHTML(){
 }
 function setHTML(){
   var f=S.font||'m';
-  var h='<header class="hd rise"><div><small>Atur aplikasi</small><h1><b>Setelan</b></h1><p>Sesuaikan getar dan ukuran huruf.</p></div></header>';
-  h+='<section class="panel rise" style="--i:1"><div class="row"><div><b>Getar saat zikir</b><small>Getar halus tiap hitungan, getar kuat saat pindah ke bacaan berikutnya.</small></div><button class="sw'+(S.vibrate!==false?' on':'')+'" data-act="vibtog" role="switch" aria-checked="'+(S.vibrate!==false)+'" aria-label="Getar saat zikir"></button></div>'
+  var th=S.theme||'auto';
+  var h='<header class="hd rise"><div><small>Atur aplikasi</small><h1><b>Setelan</b></h1><p>Sesuaikan tampilan, getar, dan ukuran huruf.</p></div></header>';
+  h+='<section class="panel rise" style="--i:1"><div class="row"><div><b>Tema</b></div><div class="seg">'+[['auto','Otomatis'],['light','Terang'],['dark','Gelap']].map(function(x){return '<button data-act="theme" data-v="'+x[0]+'" class="'+(th===x[0]?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div></div><div class="row"><div><b>Getar saat zikir</b><small>Getar halus tiap hitungan, getar kuat saat pindah ke bacaan berikutnya.</small></div><button class="sw'+(S.vibrate!==false?' on':'')+'" data-act="vibtog" role="switch" aria-checked="'+(S.vibrate!==false)+'" aria-label="Getar saat zikir"></button></div>'
    +'<div class="row"><div><b>Ukuran huruf Arab</b></div><div class="seg">'+[['m','Sedang'],['l','Besar'],['xl','Terbesar']].map(function(x){return '<button data-act="font" data-v="'+x[0]+'" class="'+(f===x[0]?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div></div>'
    +'<div class="preview" style="font-size:'+(27*({m:1,l:1.15,xl:1.3}[f]))+'px">سُبْحَانَ اللَّهِ وَبِحَمْدِهِ</div></section>';
   h+='<section class="panel rise" style="--i:2;margin-top:12px"><div class="row"><div><b class="'+(resetArm?'danger':'')+'">Hapus catatan zikir</b><small>'+(resetArm?'Semua catatan dan hari berturut-turut akan hilang. Ketuk lagi untuk memastikan.':'Menghapus riwayat zikir yang tersimpan di perangkat ini.')+'</small></div><button class="btn ghost'+(resetArm?' danger':'')+'" data-act="reset">'+(resetArm?'Ya, hapus':'Hapus')+'</button></div></section>';
@@ -420,6 +439,15 @@ function zTap(n){
   if(zs.count>=d.target){zs.lock=true;setTimeout(function(){if(!zs)return;zs.idx++;zs.count=0;zs.lock=false;if(zs.idx<DZIKIR.length)vib([90,70,90]);zRender();var b=$('zbody');if(b)b.scrollTop=0},420)}
 }
 
+/* ---------- Tema ---------- */
+function isDark(){var t=S.theme||'auto';return t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches)}
+function applyTheme(){
+  var r=document.documentElement,t=S.theme||'auto';
+  if(t==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',t);
+  try{if(window.AndroidBridge&&AndroidBridge.setTheme)AndroidBridge.setTheme(isDark())}catch(e){}
+}
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme)}catch(e){}
+
 /* ---------- Kerangka, navigasi, transisi ---------- */
 var RENDER={zikir:homeHTML,bacaan:bacaanHTML,setelan:setHTML};
 function render(){$('view').innerHTML=RENDER[view]()}
@@ -459,6 +487,7 @@ document.addEventListener('click',function(ev){
   else if(a==='zskip'&&zs){zs.idx++;zs.count=0;vib(30);zRender()}
   else if(a==='zprev'&&zs){if(zs.count>0)zs.count=0;else zs.idx=Math.max(0,zs.idx-1);vib(30);zRender()}
   else if(a==='vibtog'){S.vibrate=!(S.vibrate!==false);save();if(S.vibrate)vib([90,70,90]);render()}
+  else if(a==='theme'){S.theme=t.dataset.v;save();applyTheme();render()}
   else if(a==='font'){S.font=t.dataset.v;save();render()}
   else if(a==='reset'){
     if(!resetArm){resetArm=true;render();clearTimeout(go.rt);go.rt=setTimeout(function(){resetArm=false;if(view==='setelan')render()},5000)}
@@ -471,7 +500,7 @@ window.__back=function(){if(zs){zClose();return true}return false};
 
 (function init(){
   var h=(location.hash||'').slice(1);if(TABS.some(function(t){return t[0]===h}))view=h;
-  buildNav();render();
+  applyTheme();buildNav();render();
   requestAnimationFrame(function(){markNav(false)});
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){markNav(false)});
 })();

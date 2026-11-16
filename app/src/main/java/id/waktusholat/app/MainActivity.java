@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import org.json.JSONArray;
 import android.webkit.WebResourceRequest;
@@ -49,6 +50,21 @@ public class MainActivity extends Activity {
     }
 
     private class Bridge {
+        @JavascriptInterface
+        public void setTheme(final boolean dark) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    int c = dark ? 0xFF050A08 : 0xFFEDF5F0;
+                    getWindow().setStatusBarColor(c);
+                    getWindow().setNavigationBarColor(c);
+                    int flags = dark ? 0 : (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+                    getWindow().getDecorView().setSystemUiVisibility(flags);
+                    web.setBackgroundColor(c);
+                }
+            });
+        }
+
         @JavascriptInterface
         public void vibrate(String json) {
             try {

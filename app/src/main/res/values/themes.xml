@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="android:Theme.Material.NoActionBar">
-        <item name="android:windowBackground">#050A08</item>
-        <item name="android:statusBarColor">#050A08</item>
-        <item name="android:navigationBarColor">#050A08</item>
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">#EDF5F0</item>
+        <item name="android:statusBarColor">#EDF5F0</item>
+        <item name="android:navigationBarColor">#EDF5F0</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 </resources>
