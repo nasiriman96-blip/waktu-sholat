@@ -1,6 +1,6 @@
-# Waktu Sholat (APK)
+# Zikir Sholat (APK)
 
-Aplikasi Android berupa WebView yang memuat aplikasi Waktu Sholat dari `app/src/main/assets/index.html`.
+Aplikasi Android berupa WebView yang memuat aplikasi Zikir Sholat dari `app/src/main/assets/index.html`.
 
 ## Cara membuat APK lewat GitHub
 1. Unggah seluruh isi folder ini ke repositori GitHub (cabang `main`).
@@ -11,4 +11,3 @@ Aplikasi Android berupa WebView yang memuat aplikasi Waktu Sholat dari `app/src/
 
 ## Catatan
 - Font dimuat dari Google Fonts, perlu internet saat pertama dibuka. Tanpa itu dipakai font bawaan ponsel.
-- Pengingat adzan hanya berbunyi saat aplikasi terbuka.
