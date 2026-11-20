@@ -10,8 +10,16 @@ android {
         applicationId 'id.waktusholat.app'
         minSdk 27
         targetSdk 34
-        versionCode 1
+        versionCode (System.getenv('GITHUB_RUN_NUMBER') ?: '1').toInteger()
         versionName '1.0'
+    }
+    signingConfigs {
+        debug {
+            storeFile file('waktu-sholat.keystore')
+            storePassword 'waktusholat'
+            keyAlias 'waktusholat'
+            keyPassword 'waktusholat'
+        }
     }
     buildTypes {
         release { minifyEnabled false }

@@ -250,7 +250,7 @@ input[type=range]{width:100%;accent-color:var(--emerald)}
   }
   function arabPanel(list){
     var txt=list.every(function(im){return im.t});
-    return '<div class="arab"><div class="arab-in ar-txt"><div class="atxt" lang="ar" dir="rtl">'+(txt?list.map(function(im){return aText(im.t)}).join(''):'')+'</div></div>'+
+    return '<div class="arab"><div class="arab-in ar-txt"><div class="atxt" lang="ar" dir="rtl">'+(txt?aText(list.reduce(function(acc,im,i){return i?acc+(im.join?' ':'\n\n')+im.t:im.t},'')):'')+'</div></div>'+
       '<div class="arab-in ar-img">'+list.map(function(im){return ar(im,'',true)}).join('')+'</div></div>';
   }
   function blocks(bl){
