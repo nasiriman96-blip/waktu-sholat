@@ -382,7 +382,7 @@ function bacaanHTML(){
   var h='<header class="hd rise"><div><small>Isi zikir</small><h1><b>Bacaan</b></h1><p>Tahlil, Maulid, dan isi zikir ba’da sholat.</p></div></header>';
   var tl={};try{tl=(JSON.parse(localStorage.getItem('tm-state')||'{}').last)||{}}catch(e){}
   h+='<h2 class="t">Tahlil &amp; Maulid</h2><div class="stack">';
-  [['tahlil','Tahlil','تَهْلِيل','12 bahagian · hal. 50–73'],['maulid','Maulid Nabi &amp; Marhaban','مَوْلِد','4 bahagian · hal. 76–97']].forEach(function(b,i){
+  [['tahlil','Tahlil','تَهْلِيل','11 bahagian · hal. 50–73'],['maulid','Maulid Nabi &amp; Marhaban','مَوْلِد','4 bahagian · hal. 76–97']].forEach(function(b,i){
     h+='<a class="panel sec lnk rise" style="--i:'+(i+1)+'" href="tm/index.html#'+b[0]+'"><span class="n ar">'+b[2]+'</span><span><b>'+b[1]+'</b><small>'+(tl[b[0]]>0?'Lanjutkan di bahagian '+(tl[b[0]]+1):b[3])+'</small></span><span class="chev">'+ico('next',20,2)+'</span></a>';
   });
   h+='</div><h2 class="t">Zikir ba’da sholat</h2><div class="stack">';
