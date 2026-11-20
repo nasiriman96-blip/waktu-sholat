@@ -397,11 +397,18 @@ function bacaanHTML(){
 function setHTML(){
   var f=S.font||'m';
   var th=S.theme||'auto';
-  var h='<header class="hd rise"><div><small>Atur aplikasi</small><h1><b>Setelan</b></h1><p>Sesuaikan tampilan, getar, dan ukuran huruf.</p></div></header>';
+  var h='<header class="hd rise"><div><small>Atur aplikasi</small><h1><b>Setelan</b></h1><p>Sesuaikan tampilan, getar, dan ukuran huruf. Berlaku juga untuk Tahlil &amp; Maulid.</p></div></header>';
   h+='<section class="panel rise" style="--i:1"><div class="row"><div><b>Tema</b></div><div class="seg">'+[['auto','Otomatis'],['light','Terang'],['dark','Gelap']].map(function(x){return '<button data-act="theme" data-v="'+x[0]+'" class="'+(th===x[0]?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div></div><div class="row"><div><b>Getar saat zikir</b><small>Getar halus tiap hitungan, getar kuat saat pindah ke bacaan berikutnya.</small></div><button class="sw'+(S.vibrate!==false?' on':'')+'" data-act="vibtog" role="switch" aria-checked="'+(S.vibrate!==false)+'" aria-label="Getar saat zikir"></button></div>'
    +'<div class="row"><div><b>Ukuran huruf Arab</b></div><div class="seg">'+[['m','Sedang'],['l','Besar'],['xl','Terbesar']].map(function(x){return '<button data-act="font" data-v="'+x[0]+'" class="'+(f===x[0]?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div></div>'
    +'<div class="preview" style="font-size:'+(27*({m:1,l:1.15,xl:1.3}[f]))+'px">سُبْحَانَ اللَّهِ وَبِحَمْدِهِ</div></section>';
-  h+='<section class="panel rise" style="--i:2;margin-top:12px"><div class="row"><div><b class="'+(resetArm?'danger':'')+'">Hapus catatan zikir</b><small>'+(resetArm?'Semua catatan dan hari berturut-turut akan hilang. Ketuk lagi untuk memastikan.':'Menghapus riwayat zikir yang tersimpan di perangkat ini.')+'</small></div><button class="btn ghost'+(resetArm?' danger':'')+'" data-act="reset">'+(resetArm?'Ya, hapus':'Hapus')+'</button></div></section>';
+  var tm=S.tm||{};
+  function tmRow(lbl,k,def,opts){var c=tm[k]||def;return '<div class="row"><div><b>'+lbl+'</b></div><div class="seg">'+opts.map(function(x){return '<button data-act="tmset" data-k="'+k+'" data-v="'+x[0]+'" class="'+(c===x[0]?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div></div>'}
+  h+='<h2 class="t">Tahlil &amp; Maulid</h2><section class="panel rise" style="--i:2">'
+   +tmRow('Tampilkan','mode','both',[['both','Keduanya'],['arab','Arab'],['trans','Terjemah']])
+   +tmRow('Tulisan Arab','src','text',[['text','Teks'],['img','Gambar asli']])
+   +tmRow('Ukuran terjemahan','tfs','m',[['s','Kecil'],['m','Sedang'],['l','Besar']])
+   +'</section>';
+  h+='<section class="panel rise" style="--i:3;margin-top:12px"><div class="row"><div><b class="'+(resetArm?'danger':'')+'">Hapus catatan zikir</b><small>'+(resetArm?'Semua catatan dan hari berturut-turut akan hilang. Ketuk lagi untuk memastikan.':'Menghapus riwayat zikir yang tersimpan di perangkat ini.')+'</small></div><button class="btn ghost'+(resetArm?' danger':'')+'" data-act="reset">'+(resetArm?'Ya, hapus':'Hapus')+'</button></div></section>';
   h+='<p class="note rise" style="--i:3;margin:16px 4px">Isi bacaan diambil dari berkas Dzikir Ba’da Sholat milik Anda. Catatan tersimpan di perangkat ini saja.</p>';
   return h;
 }
@@ -506,6 +513,7 @@ document.addEventListener('click',function(ev){
   else if(a==='vibtog'){S.vibrate=!(S.vibrate!==false);save();if(S.vibrate)vib([90,70,90]);render()}
   else if(a==='theme'){S.theme=t.dataset.v;save();applyTheme();render()}
   else if(a==='font'){S.font=t.dataset.v;save();render()}
+  else if(a==='tmset'){S.tm=S.tm||{};S.tm[k]=t.dataset.v;save();render()}
   else if(a==='reset'){
     if(!resetArm){resetArm=true;render();clearTimeout(go.rt);go.rt=setTimeout(function(){resetArm=false;if(view==='setelan')render()},5000)}
     else{resetArm=false;S.zdone={};save();toast('Catatan zikir dihapus');render()}

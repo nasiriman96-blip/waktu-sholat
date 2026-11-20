@@ -178,7 +178,6 @@ input[type=range]{width:100%;accent-color:var(--emerald)}
       <div class="ttl"><b id="rTitle"></b><small id="rSub"></small></div>
       <button class="ib" id="bToc" type="button" aria-label="Daftar isi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
       <button class="ib" id="bTas" type="button" aria-label="Penghitung zikir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/></svg></button>
-      <button class="ib" id="bSet" type="button" aria-label="Tampilan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 19l5-14 5 14M7 14h6M18 8v10M16 10l2-2 2 2"/></svg></button>
     </div>
     <div class="prog"><i id="progI"></i></div>
   </header>
@@ -189,21 +188,6 @@ input[type=range]{width:100%;accent-color:var(--emerald)}
 
 <aside class="sheet" id="shToc" aria-label="Daftar isi" aria-hidden="true">
   <div class="grab"></div><h3>Daftar isi</h3><nav class="toc" id="tocList"></nav>
-</aside>
-
-<aside class="sheet" id="shSet" aria-label="Tampilan" aria-hidden="true">
-  <div class="grab"></div><h3>Tampilan</h3>
-  <div class="row"><span class="l">Tampilkan</span>
-    <div class="seg" id="segMode"><button type="button" data-v="both">Arab + terjemah</button><button type="button" data-v="arab">Arab saja</button><button type="button" data-v="trans">Terjemah saja</button></div></div>
-  <div class="row"><span class="l">Tema</span>
-    <div class="seg" id="segTheme"><button type="button" data-v="auto">Otomatis</button><button type="button" data-v="light">Terang</button><button type="button" data-v="dark">Malam</button></div></div>
-  <div class="row"><label for="rgFs">Ukuran terjemahan: <b id="fsVal"></b></label>
-    <input type="range" id="rgFs" min="15" max="30" step="1"></div>
-  <div class="row"><span class="l">Tulisan Arab</span>
-    <div class="seg" id="segSrc"><button type="button" data-v="text">Teks</button><button type="button" data-v="img">Gambar asli</button></div>
-    <div class="hint">Teks disalin ulang dari gambar buku. Jika ada beda, ikuti gambar asli.</div></div>
-  <div class="row"><label for="rgAfs">Ukuran Arab: <b id="afsVal"></b></label>
-    <input type="range" id="rgAfs" min="22" max="60" step="2"></div>
 </aside>
 
 <aside class="sheet" id="shTas" aria-label="Penghitung zikir" aria-hidden="true">
@@ -222,9 +206,10 @@ input[type=range]{width:100%;accent-color:var(--emerald)}
 (function(){
   var D=null, book=null, bookKey=null, secs=[], cur=0;
   var $=function(s){return document.querySelector(s)};
-  var S={mode:'both',theme:'auto',src:'text',fs:19,afs:(window.innerWidth<520?26:32),last:{tahlil:0,maulid:0},tgt:33};
-  try{var raw=localStorage.getItem('tm-state'); if(raw) S=Object.assign(S,JSON.parse(raw));
-    else { var ap=JSON.parse(localStorage.getItem('waktu-sholat-v1')||'{}'); if(ap.theme) S.theme=ap.theme; } }catch(e){}
+  var S={last:{tahlil:0,maulid:0},tgt:33};
+  try{var raw=localStorage.getItem('tm-state'); if(raw){var o=JSON.parse(raw); if(o.last)S.last=o.last; if(o.tgt!=null)S.tgt=o.tgt;}}catch(e){}
+  /* Setelan tampilan dibaca dari aplikasi utama (halaman Setelan) */
+  function appS(){try{return JSON.parse(localStorage.getItem('waktu-sholat-v1')||'{}')}catch(e){return {}}}
   function save(){try{localStorage.setItem('tm-state',JSON.stringify(S));}catch(e){}}
   function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
   var BOOKS={
@@ -236,17 +221,14 @@ input[type=range]{width:100%;accent-color:var(--emerald)}
 
   /* ---- theme / display ---- */
   function applyTheme(){
+    var A=appS(), tm=A.tm||{}, theme=A.theme||'auto', mode=tm.mode||'both', src=tm.src||'text';
     var r=document.documentElement;
-    if(S.theme==='auto') r.removeAttribute('data-theme'); else r.setAttribute('data-theme',S.theme);
-    try{ if(window.AndroidBridge&&AndroidBridge.setTheme) AndroidBridge.setTheme(S.theme==='dark'||(S.theme==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches)); }catch(e){}
-    r.style.setProperty('--fs',S.fs+'px'); r.style.setProperty('--afs',S.afs+'px');
-    var rd=$('#reader'); rd.classList.remove('mode-arab','mode-trans','src-text','src-img'); rd.classList.add(S.src==='img'?'src-img':'src-text');
-    if(S.mode==='arab') rd.classList.add('mode-arab'); if(S.mode==='trans') rd.classList.add('mode-trans');
-    document.querySelectorAll('#segMode button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===S.mode)});
-    document.querySelectorAll('#segTheme button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===S.theme)});
-    $('#rgFs').value=S.fs; $('#fsVal').textContent=S.fs+' px';
-    document.querySelectorAll('#segSrc button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===S.src)});
-    $('#rgAfs').value=S.afs; $('#afsVal').textContent=S.afs+' px';
+    if(theme==='auto') r.removeAttribute('data-theme'); else r.setAttribute('data-theme',theme);
+    try{ if(window.AndroidBridge&&AndroidBridge.setTheme) AndroidBridge.setTheme(theme==='dark'||(theme==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches)); }catch(e){}
+    var fs={s:17,m:19,l:22}[tm.tfs||'m'], afs=(window.innerWidth<520?26:32)*({m:1,l:1.15,xl:1.3}[A.font||'m']);
+    r.style.setProperty('--fs',fs+'px'); r.style.setProperty('--afs',afs.toFixed(1)+'px');
+    var rd=$('#reader'); rd.classList.remove('mode-arab','mode-trans','src-text','src-img'); rd.classList.add(src==='img'?'src-img':'src-text');
+    if(mode==='arab') rd.classList.add('mode-arab'); if(mode==='trans') rd.classList.add('mode-trans');
   }
 
   /* ---- rendering ---- */
@@ -346,7 +328,6 @@ input[type=range]{width:100%;accent-color:var(--emerald)}
   }
   $('#scrim').addEventListener('click',close);
   $('#bToc').addEventListener('click',function(){sheet('#shToc')});
-  $('#bSet').addEventListener('click',function(){sheet('#shSet')});
     $('#bTas').addEventListener('click',function(){sheet('#shTas')});
   $('#back').addEventListener('click',toApp);
   window.__back=function(){ if(openSh){close();return true;} toApp(); return true; };
@@ -361,11 +342,6 @@ input[type=range]{width:100%;accent-color:var(--emerald)}
     var o=e.target.closest('[data-open]'); if(o){ location.hash=o.dataset.open; return; }
     var g=e.target.closest('[data-go]'); if(g&&!g.disabled){ e.preventDefault(); close(); goTo(+g.dataset.go); }
   });
-  document.querySelectorAll('#segMode button').forEach(function(b){b.addEventListener('click',function(){S.mode=b.dataset.v;applyTheme();save();})});
-  document.querySelectorAll('#segTheme button').forEach(function(b){b.addEventListener('click',function(){S.theme=b.dataset.v;applyTheme();save();})});
-  $('#rgFs').addEventListener('input',function(e){S.fs=+e.target.value;applyTheme();save();});
-  $('#rgAfs').addEventListener('input',function(e){S.afs=+e.target.value;applyTheme();save();});
-  document.querySelectorAll('#segSrc button').forEach(function(b){b.addEventListener('click',function(){S.src=b.dataset.v;applyTheme();save();})});
 
   /* ---- tasbih ---- */
   var count=0;
