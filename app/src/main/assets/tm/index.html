@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tahlil dan Maulid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Amiri:wght@400;700&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: emerald-and-gold prayer book. Home = two kitab covers; reader = one long scroll of numbered bahagian, Arabic page above its Malay translation. */
+:root{
+  --bg:#edf0e8;
+  --panel:#fbfbf6;
+  --ink:#10251e;
+  --text:#22332c;
+  --muted:#5d716a;
+  --emerald:#0d5a47;
+  --emerald-deep:#093d31;
+  --gold:#8f6b17;
+  --gold-soft:#c9a24a;
+  --line:#d3d9cb;
+  --shadow:0 1px 2px rgba(9,61,49,.08),0 8px 28px rgba(9,61,49,.08);
+  --display:"Cormorant Garamond","Palatino Linotype",Georgia,serif;
+  --body:"Literata",Georgia,"Times New Roman",serif;
+  --ui:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --fs:19px;
+  --afs:32px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#08171a;--panel:#0f2a29;--ink:#f1e8cc;--text:#dfe5d8;--muted:#92aaa2;
+    --emerald:#7fd1b4;--emerald-deep:#0b3a31;--gold:#e0bd68;--gold-soft:#d4af5a;--line:#1f423e;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 28px rgba(0,0,0,.35);color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#08171a;--panel:#0f2a29;--ink:#f1e8cc;--text:#dfe5d8;--muted:#92aaa2;
+  --emerald:#7fd1b4;--emerald-deep:#0b3a31;--gold:#e0bd68;--gold-soft:#d4af5a;--line:#1f423e;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 28px rgba(0,0,0,.35);color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.6;min-height:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold-soft);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+.pat,.callout::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%23d4af5a' stroke-width='1' opacity='.55'%3E%3Crect x='14' y='14' width='28' height='28'/%3E%3Crect x='14' y='14' width='28' height='28' transform='rotate(45 28 28)'/%3E%3Ccircle cx='28' cy='28' r='4'/%3E%3C/g%3E%3C/svg%3E")}
+.ink{background:currentColor;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%}
+
+/* ---------- Home ---------- */
+.wrap{max-width:760px;margin:0 auto;padding:0 18px}
+.home-top{display:flex;align-items:center;justify-content:space-between;padding:18px 0 6px;font-family:var(--ui);font-size:13px;color:var(--muted)}
+.home-top button{background:none;border:1px solid var(--line);border-radius:999px;padding:7px 14px;color:var(--text)}
+.hero{padding:22px 0 8px}
+.hero h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,8vw,52px);line-height:1.02;margin:0 0 8px;color:var(--emerald);text-wrap:balance}
+.hero p{margin:0;max-width:46ch;color:var(--muted);font-size:16px}
+.books{display:grid;gap:16px;margin:22px 0 14px}
+.book{position:relative;overflow:hidden;border:0;text-align:left;border-radius:22px;padding:22px 22px 20px;color:#f4ecd2;background:linear-gradient(160deg,#0f6a54 0%,#0a4638 55%,#082f27 100%);box-shadow:var(--shadow);display:grid;grid-template-columns:1fr auto;gap:10px 16px;align-items:end;min-height:190px}
+.book>*{position:relative}
+.book .cv{color:#e5c26c;aspect-ratio:var(--r);width:var(--w);max-width:100%}
+.book h2{font-family:var(--display);font-size:30px;line-height:1.05;margin:0;font-weight:700}
+.book .meta{font-family:var(--ui);font-size:13px;opacity:.85;margin-top:6px}
+.book .go{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(229,194,108,.35);padding-top:12px;font-family:var(--ui);font-size:14px;color:#e5c26c}
+.book:hover{transform:translateY(-2px)}
+.book{transition:transform .2s}
+.note{font-family:var(--ui);font-size:13px;color:var(--muted);padding:14px 0 36px;max-width:60ch}
+
+/* ---------- Reader ---------- */
+.bar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar-in{max-width:760px;margin:0 auto;padding:8px 12px;display:flex;align-items:center;gap:6px;font-family:var(--ui)}
+.bar .ttl{flex:1;min-width:0;line-height:1.2}
+.bar .ttl b{display:block;font-family:var(--display);font-size:19px;color:var(--emerald);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .ttl small{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.ib{width:42px;height:42px;border-radius:12px;border:0;background:none;display:grid;place-items:center;color:var(--text)}
+.ib:hover{background:color-mix(in srgb,var(--emerald) 12%,transparent)}
+.ib svg{width:22px;height:22px}
+.prog{height:3px;background:transparent}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold-soft),var(--emerald))}
+.read{max-width:760px;margin:0 auto;padding:6px 14px 120px}
+.sec{padding-top:34px;scroll-margin-top:70px}
+.sec-h{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.badge{flex:none;width:54px;height:54px;color:var(--gold);position:relative;display:grid;place-items:center}
+.badge svg{position:absolute;inset:0;width:100%;height:100%}
+.badge span{position:relative;font-family:var(--display);font-weight:700;font-size:21px;color:var(--emerald)}
+.sec-h h2{font-family:var(--display);font-size:28px;line-height:1.05;margin:0;color:var(--emerald);text-wrap:balance}
+.sec-h p{margin:3px 0 0;font-family:var(--ui);font-size:13px;color:var(--muted)}
+.pg{display:inline-block;font-family:var(--ui);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
+.arab{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px}
+.arab-in{width:100%;padding:18px 14px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.atxt{width:100%;direction:rtl;text-align:right;font-family:"Amiri","Scheherazade New","Traditional Arabic",serif;font-size:var(--afs);line-height:2.05;color:var(--ink);font-feature-settings:"liga","calt"}
+.atxt .ah{text-align:center;font-weight:700;font-size:1.08em;margin:.1em 0 .25em;line-height:1.9}
+.atxt .ap{margin:0 0 .5em;text-align:right}
+.atxt .av{margin:.1em 0 .7em;padding-inline-start:0}
+.atxt .av div+div{padding-inline-start:1.6em}
+.atxt .al{margin:0 0 .5em}
+.atxt .ac{text-align:center;text-align-last:center}
+.src-text .ar-img{display:none}
+img.ar{display:block;height:auto}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) img.ar{filter:invert(.92)}}
+:root[data-theme="dark"] img.ar{filter:invert(.92)}
+.src-img .ar-txt{display:none}
+.chk{font-family:var(--ui);font-size:12px;color:var(--muted);margin:2px 4px 14px;display:flex;gap:6px;align-items:flex-start}
+.chk b{color:var(--gold);font-weight:600}
+.arab .ar{color:var(--ink);aspect-ratio:var(--r);width:var(--w);max-width:100%}
+.arab .ar.big{margin-top:4px}
+.tr{background:transparent;padding:4px 4px 0}
+.tr .lbl{font-family:var(--ui);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px;margin:2px 0 12px}
+.tr .lbl::after{content:"";flex:1;height:1px;background:var(--line)}
+.tr p,.tr h3{font-size:var(--fs);margin:0 0 1em;hyphens:auto;-webkit-hyphens:auto}
+.tr h3{font-family:var(--display);font-size:calc(var(--fs) * 1.2);text-align:center;font-weight:700;color:var(--emerald);margin:1.1em 0 .8em;line-height:1.25}
+.cp{border-left:3px solid var(--gold-soft);padding:2px 0 2px 14px;margin:0 0 1.1em}
+.cp p{margin:0}
+.cp .b{padding-left:1.4em;color:var(--muted)}
+.dia{display:inline-block;width:.42em;height:.42em;background:var(--gold-soft);transform:rotate(45deg);margin:0 .5em .12em;vertical-align:middle}
+.refrain{margin:6px 0 22px;border-radius:16px;border:1px dashed color-mix(in srgb,var(--gold-soft) 70%,transparent);padding:14px 12px 12px;background:color-mix(in srgb,var(--panel) 70%,transparent)}
+.refrain .ar{color:var(--ink);aspect-ratio:var(--r);width:var(--w);max-width:100%;margin:0 auto}
+.refrain .arab-in{padding:4px 0}
+.refrain p{font-size:calc(var(--fs) * .82);font-style:italic;color:var(--muted);margin:10px 0 0;text-align:center}
+.callout{margin:26px 0 6px;padding:16px;border-radius:16px;text-align:center;font-family:var(--display);font-size:26px;font-weight:700;color:#f4ecd2;background:linear-gradient(160deg,#0f6a54,#082f27);position:relative;overflow:hidden}
+.callout::before{content:"";position:absolute;inset:0;opacity:.3;background-size:56px 56px}
+.callout span{position:relative}
+.mode-arab .tr{display:none}
+.mode-trans .arab,.mode-trans .refrain .ar-box{display:none}
+.mode-trans .refrain{border-style:solid}
+.mode-arab .refrain p{display:none}
+.nav{display:flex;gap:10px;margin:26px 0 6px;font-family:var(--ui)}
+.nav button{flex:1;padding:13px 12px;border-radius:14px;border:1px solid var(--line);background:var(--panel);font-size:14px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.nav button small{color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.nav button b{font-family:var(--display);font-size:18px;color:var(--emerald);font-weight:700}
+.nav button:last-child{text-align:right;align-items:flex-end}
+.nav button:disabled{opacity:.35;cursor:default}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin-top:34px}
+
+/* ---------- Sheets ---------- */
+.scrim{position:fixed;inset:0;background:rgba(3,15,12,.5);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;max-width:620px;margin:0 auto;background:var(--panel);border-radius:22px 22px 0 0;border:1px solid var(--line);border-bottom:0;box-shadow:0 -12px 40px rgba(0,0,0,.25);padding:10px 18px 26px;transform:translateY(105%);transition:transform .25s;max-height:82%;overflow:auto;font-family:var(--ui)}
+.sheet.on{transform:none}
+.grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
+.sheet h3{font-family:var(--display);font-size:24px;margin:0 0 12px;color:var(--emerald)}
+.row{margin:16px 0}
+.row>label,.row>.l{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{flex:1;border:0;background:none;padding:10px 6px;font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--emerald);color:var(--panel)}
+.seg button+button{border-left:1px solid var(--line)}
+input[type=range]{width:100%;accent-color:var(--emerald)}
+.hint{font-size:12px;color:var(--muted);margin-top:6px}
+.toc a{display:flex;gap:12px;align-items:center;padding:12px 8px;border-radius:12px;text-decoration:none;color:var(--text);border-bottom:1px solid var(--line)}
+.toc a:last-child{border-bottom:0}
+.toc a .n{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:700;color:var(--emerald);border:1px solid var(--gold-soft)}
+.toc a b{display:block;font-family:var(--display);font-size:19px;line-height:1.1;font-weight:700}
+.toc a small{color:var(--muted);font-size:12px}
+.toc a[aria-current="true"]{background:color-mix(in srgb,var(--emerald) 12%,transparent)}
+.toc a[aria-current="true"] .n{background:var(--emerald);color:var(--panel)}
+.tasbih{text-align:center}
+.count{font-family:var(--display);font-size:76px;font-weight:700;line-height:1;color:var(--emerald);font-variant-numeric:tabular-nums}
+.count small{font-size:24px;color:var(--muted);font-weight:500}
+.tap{width:min(240px,70%);aspect-ratio:1;border-radius:50%;border:0;margin:18px auto 8px;display:grid;place-items:center;font-size:17px;letter-spacing:.04em;color:#f4ecd2;background:radial-gradient(circle at 35% 30%,#1b8266,#0a4638 70%);box-shadow:inset 0 0 0 6px rgba(229,194,108,.5),var(--shadow);transition:transform .08s;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.tap:active{transform:scale(.96)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chips button{border:1px solid var(--line);background:none;border-radius:999px;padding:7px 14px;font-size:14px}
+.chips button[aria-pressed="true"]{background:var(--emerald);color:var(--panel);border-color:var(--emerald)}
+.done{color:var(--gold);font-weight:600;min-height:1.4em;margin-top:4px}
+.reset{margin-top:10px;border:0;background:none;color:var(--muted);text-decoration:underline;font-size:14px}
+@media (min-width:640px){
+  .books{grid-template-columns:1fr 1fr}
+  .read{padding-left:18px;padding-right:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<section id="reader">
+  <header class="bar">
+    <div class="bar-in">
+      <button class="ib" id="back" type="button" aria-label="Kembali ke beranda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="ttl"><b id="rTitle"></b><small id="rSub"></small></div>
+      <button class="ib" id="bToc" type="button" aria-label="Daftar isi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
+      <button class="ib" id="bTas" type="button" aria-label="Penghitung zikir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/></svg></button>
+      <button class="ib" id="bSet" type="button" aria-label="Tampilan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 19l5-14 5 14M7 14h6M18 8v10M16 10l2-2 2 2"/></svg></button>
+    </div>
+    <div class="prog"><i id="progI"></i></div>
+  </header>
+  <main class="read" id="read"></main>
+</section>
+
+<div class="scrim" id="scrim"></div>
+
+<aside class="sheet" id="shToc" aria-label="Daftar isi" aria-hidden="true">
+  <div class="grab"></div><h3>Daftar isi</h3><nav class="toc" id="tocList"></nav>
+</aside>
+
+<aside class="sheet" id="shSet" aria-label="Tampilan" aria-hidden="true">
+  <div class="grab"></div><h3>Tampilan</h3>
+  <div class="row"><span class="l">Tampilkan</span>
+    <div class="seg" id="segMode"><button type="button" data-v="both">Arab + terjemah</button><button type="button" data-v="arab">Arab saja</button><button type="button" data-v="trans">Terjemah saja</button></div></div>
+  <div class="row"><span class="l">Tema</span>
+    <div class="seg" id="segTheme"><button type="button" data-v="auto">Otomatis</button><button type="button" data-v="light">Terang</button><button type="button" data-v="dark">Malam</button></div></div>
+  <div class="row"><label for="rgFs">Ukuran terjemahan: <b id="fsVal"></b></label>
+    <input type="range" id="rgFs" min="15" max="30" step="1"></div>
+  <div class="row"><span class="l">Tulisan Arab</span>
+    <div class="seg" id="segSrc"><button type="button" data-v="text">Teks</button><button type="button" data-v="img">Gambar asli</button></div>
+    <div class="hint">Teks disalin ulang dari gambar buku. Jika ada beda, ikuti gambar asli.</div></div>
+  <div class="row"><label for="rgAfs">Ukuran Arab: <b id="afsVal"></b></label>
+    <input type="range" id="rgAfs" min="22" max="60" step="2"></div>
+</aside>
+
+<aside class="sheet" id="shTas" aria-label="Penghitung zikir" aria-hidden="true">
+  <div class="grab"></div><h3>Penghitung zikir</h3>
+  <div class="tasbih">
+    <div class="count" aria-live="polite"><span id="cnt">0</span><small id="tgtTxt"></small></div>
+    <button class="tap" id="tap" type="button">Ketuk untuk menghitung</button>
+    <div class="done" id="done"></div>
+    <div class="chips" id="chips" role="group" aria-label="Target hitungan"></div>
+    <button class="reset" id="reset" type="button">Ulangi dari nol</button>
+  </div>
+</aside>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  var D=null, book=null, bookKey=null, secs=[], cur=0;
+  var $=function(s){return document.querySelector(s)};
+  var S={mode:'both',theme:'auto',src:'text',fs:19,afs:(window.innerWidth<520?26:32),last:{tahlil:0,maulid:0},tgt:33};
+  try{var raw=localStorage.getItem('tm-state'); if(raw) S=Object.assign(S,JSON.parse(raw));
+    else { var ap=JSON.parse(localStorage.getItem('waktu-sholat-v1')||'{}'); if(ap.theme) S.theme=ap.theme; } }catch(e){}
+  function save(){try{localStorage.setItem('tm-state',JSON.stringify(S));}catch(e){}}
+  function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+  var BOOKS={
+    tahlil:{name:'Tahlil',sub:'Hal. 50–73',cover:'tahlil'},
+    maulid:{name:'Maulid Nabi & Marhaban',sub:'Hal. 76–97',cover:'maulid'}
+  };
+  var REFRAIN='Ya Allah harumkanlah kuburnya yang mulia dengan wangian yang segar daripada selawat dan salam. Ya Allah sejahterakanlah dan selamatkanlah serta berkatilah ke atasnya.';
+  var BADGE='<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="10" y="10" width="28" height="28"/><rect x="10" y="10" width="28" height="28" transform="rotate(45 24 24)"/></svg>';
+
+  /* ---- theme / display ---- */
+  function applyTheme(){
+    var r=document.documentElement;
+    if(S.theme==='auto') r.removeAttribute('data-theme'); else r.setAttribute('data-theme',S.theme);
+    try{ if(window.AndroidBridge&&AndroidBridge.setTheme) AndroidBridge.setTheme(S.theme==='dark'||(S.theme==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches)); }catch(e){}
+    r.style.setProperty('--fs',S.fs+'px'); r.style.setProperty('--afs',S.afs+'px');
+    var rd=$('#reader'); rd.classList.remove('mode-arab','mode-trans','src-text','src-img'); rd.classList.add(S.src==='img'?'src-img':'src-text');
+    if(S.mode==='arab') rd.classList.add('mode-arab'); if(S.mode==='trans') rd.classList.add('mode-trans');
+    document.querySelectorAll('#segMode button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===S.mode)});
+    document.querySelectorAll('#segTheme button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===S.theme)});
+    $('#rgFs').value=S.fs; $('#fsVal').textContent=S.fs+' px';
+    document.querySelectorAll('#segSrc button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===S.src)});
+    $('#rgAfs').value=S.afs; $('#afsVal').textContent=S.afs+' px';
+  }
+
+  /* ---- rendering ---- */
+  function maskStyle(src){return '-webkit-mask-image:url('+src+');mask-image:url('+src+')'}
+  function ar(im,cls,rel){
+    var w=rel?(im.w/671*100):100;
+    return '<img class="ar '+(cls||'')+'" alt="Teks Arab" loading="lazy" decoding="async" src="'+im.src+'" width="'+im.w+'" height="'+im.h+'" style="--r:'+im.w+'/'+im.h+';--w:'+w.toFixed(2)+'%">';
+  }
+  function aText(t){
+    var out='';
+    t.split(/\n\s*\n/).forEach(function(g){
+      var ls=g.split('\n').map(function(x){return x.trim()}).filter(Boolean), hs=[], ps=[];
+      ls.forEach(function(l){ if(l.indexOf('# ')===0) hs.push(l.slice(2)); else ps.push(l); });
+      if(hs.length) out+='<div class="ah">'+hs.map(esc).join('<br>')+'</div>';
+      if(ps.length===2 && ps[0].length<110 && ps[1].length<110) out+='<div class="av"><div>'+esc(ps[0])+'</div><div>'+esc(ps[1])+'</div></div>';
+      else ps.forEach(function(p){ out+='<p class="ap">'+esc(p)+'</p>'; });
+    });
+    return out;
+  }
+  function arabPanel(list){
+    var txt=list.every(function(im){return im.t});
+    return '<div class="arab"><div class="arab-in ar-txt"><div class="atxt" lang="ar" dir="rtl">'+(txt?list.map(function(im){return aText(im.t)}).join(''):'')+'</div></div>'+
+      '<div class="arab-in ar-img">'+list.map(function(im){return ar(im,'',true)}).join('')+'</div></div>';
+  }
+  function blocks(bl){
+    return bl.map(function(b){
+      if(b.t==='head') return '<h3>'+esc(b.text).replace(/\n/g,'<br>')+'</h3>';
+      if(b.t==='c') return '<div class="cp"><p class="a">'+esc(b.a)+'</p><p class="b">'+esc(b.b)+'</p></div>';
+      return '<p>'+esc(b.text)+'</p>';
+    }).join('');
+  }
+  function dia(t){return esc(t).replace(/\s*•\s*/g,'<i class="dia"></i>').replace(/^(<i class="dia"><\/i>)+/,'').replace(/(<i class="dia"><\/i>)+$/,'').trim()}
+  function refrainBox(im){
+    return '<div class="refrain"><div class="ar-box"><div class="arab-in ar-txt"><div class="atxt" lang="ar" dir="rtl"><p class="ap ac">'+esc(im.t)+'</p></div></div><div class="arab-in ar-img">'+ar(im,'',true)+'</div></div><p>'+esc(REFRAIN)+'</p></div>';
+  }
+  function secHead(s){
+    return '<div class="sec-h"><div class="badge">'+BADGE+'<span>'+s.n+'</span></div><div><span class="pg">Hal. '+s.pages+'</span><h2>'+esc(s.title)+'</h2><p>'+esc(s.sub)+'</p></div></div>';
+  }
+  function renderSec(s,i,total){
+    var h='<section class="sec" id="s-'+s.id+'" data-i="'+i+'">'+secHead(s);
+    if(s.head){ h+=arabPanel(s.head); }
+    if(s.arab){ h+=arabPanel(s.arab); }
+    if(s.items){
+      h+='<div class="tr"><div class="lbl">Bacaan</div>';
+      s.items.forEach(function(it,k){
+        h+='<p>'+dia(it.p)+'</p>';
+        if(it.refrain) h+='</div>'+refrainBox(s.refrain)+'<div class="tr">';
+      });
+      h+='</div>';
+      if(s.callout) h+='<div class="callout"><span>'+esc(s.callout)+'</span></div>';
+    }
+    if(s.blocks){ h+='<div class="tr"><div class="lbl">Terjemahan</div>'+blocks(s.blocks)+'</div>'; }
+    var prev=book[i-1], next=book[i+1];
+    h+='<div class="nav"><button type="button" data-go="'+(i-1)+'" '+(prev?'':'disabled')+'><small>Sebelumnya</small><b>'+(prev?esc(prev.title):'—')+'</b></button>'+
+       '<button type="button" data-go="'+(i+1)+'" '+(next?'':'disabled')+'><small>Berikutnya</small><b>'+(next?esc(next.title):'Selesai')+'</b></button></div><div class="divider"></div></section>';
+    return h;
+  }
+  /* ---- reader control ---- */
+  var io=null;
+  function openBook(k,startAt){
+    bookKey=k; book=D[k].sections;
+    $('#rTitle').textContent=BOOKS[k].name; $('#rSub').textContent=BOOKS[k].sub;
+    $('#read').innerHTML=book.map(function(s,i){return renderSec(s,i,book.length)}).join('');
+    $('#tocList').innerHTML=book.map(function(s,i){
+      return '<a href="#" data-go="'+i+'"><span class="n">'+s.n+'</span><span><b>'+esc(s.title)+'</b><small>Hal. '+s.pages+' · '+esc(s.sub)+'</small></span></a>';
+    }).join('');
+    secs=[].slice.call(document.querySelectorAll('.sec'));
+    if(io) io.disconnect();
+    io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ cur=+e.target.dataset.i; S.last[bookKey]=cur; markToc(); save(); } });
+    },{rootMargin:'-30% 0px -65% 0px'});
+    secs.forEach(function(s){io.observe(s)});
+    applyTheme(); markToc();
+    var i=startAt==null?(S.last[k]||0):startAt; if(i>=secs.length)i=0;
+    window.scrollTo(0,0);
+    if(i>0) setTimeout(function(){goTo(i,true)},60);
+    document.title=BOOKS[k].name;
+  }
+  function goTo(i,instant){
+    if(i<0||i>=secs.length) return;
+    secs[i].scrollIntoView({behavior:instant?'auto':'smooth',block:'start'});
+  }
+  function markToc(){
+    document.querySelectorAll('#tocList a').forEach(function(a,i){ if(i===cur) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); });
+    var s=book&&book[cur]; if(s) $('#rSub').textContent='Bahagian '+s.n+' dari '+book.length+' · hal. '+s.pages;
+  }
+  function toApp(){ location.href='../index.html#bacaan'; }
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    $('#progI').style.width=(h>0?Math.min(100,scrollY/h*100):0)+'%';
+  },{passive:true});
+
+  /* ---- sheets ---- */
+  var openSh=null;
+  function sheet(id){
+    close();
+    var el=$(id); el.classList.add('on'); el.setAttribute('aria-hidden','false'); $('#scrim').classList.add('on'); openSh=el;
+  }
+  function close(){
+    if(openSh){openSh.classList.remove('on');openSh.setAttribute('aria-hidden','true');openSh=null;}
+    $('#scrim').classList.remove('on');
+  }
+  $('#scrim').addEventListener('click',close);
+  $('#bToc').addEventListener('click',function(){sheet('#shToc')});
+  $('#bSet').addEventListener('click',function(){sheet('#shSet')});
+    $('#bTas').addEventListener('click',function(){sheet('#shTas')});
+  $('#back').addEventListener('click',toApp);
+  window.__back=function(){ if(openSh){close();return true;} toApp(); return true; };
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape') close();
+    if(openSh) return;
+    if(e.key==='ArrowRight'&&e.altKey) goTo(cur+1); if(e.key==='ArrowLeft'&&e.altKey) goTo(cur-1);
+  });
+
+  /* ---- delegated clicks ---- */
+  document.addEventListener('click',function(e){
+    var o=e.target.closest('[data-open]'); if(o){ location.hash=o.dataset.open; return; }
+    var g=e.target.closest('[data-go]'); if(g&&!g.disabled){ e.preventDefault(); close(); goTo(+g.dataset.go); }
+  });
+  document.querySelectorAll('#segMode button').forEach(function(b){b.addEventListener('click',function(){S.mode=b.dataset.v;applyTheme();save();})});
+  document.querySelectorAll('#segTheme button').forEach(function(b){b.addEventListener('click',function(){S.theme=b.dataset.v;applyTheme();save();})});
+  $('#rgFs').addEventListener('input',function(e){S.fs=+e.target.value;applyTheme();save();});
+  $('#rgAfs').addEventListener('input',function(e){S.afs=+e.target.value;applyTheme();save();});
+  document.querySelectorAll('#segSrc button').forEach(function(b){b.addEventListener('click',function(){S.src=b.dataset.v;applyTheme();save();})});
+
+  /* ---- tasbih ---- */
+  var count=0;
+  var TG=[0,3,7,11,33,100];
+  function drawTas(){
+    $('#cnt').textContent=count; $('#tgtTxt').textContent=S.tgt?' / '+S.tgt:'';
+    $('#done').textContent=(S.tgt&&count>=S.tgt)?'Hitungan tercapai':'';
+    $('#chips').innerHTML=TG.map(function(t){return '<button type="button" data-t="'+t+'" aria-pressed="'+(t===S.tgt)+'">'+(t?t+'×':'Bebas')+'</button>'}).join('');
+  }
+  $('#tap').addEventListener('click',function(){
+    count++; drawTas();
+    if(S.tgt&&count===S.tgt){try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}}
+  });
+  $('#reset').addEventListener('click',function(){count=0;drawTas();});
+  $('#chips').addEventListener('click',function(e){var b=e.target.closest('button'); if(!b)return; S.tgt=+b.dataset.t; count=0; save(); drawTas();});
+
+  /* ---- routing ---- */
+  function route(){
+    if(!D) return;
+    var h=location.hash.replace('#','');
+    if(h==='tahlil'||h==='maulid'){ if(bookKey!==h) openBook(h); }
+    else { toApp(); }
+  }
+  window.addEventListener('hashchange',route);
+
+  D=window.TM_DATA; applyTheme(); drawTas(); route();
+})();
+</script>
+</body>
+</html>
