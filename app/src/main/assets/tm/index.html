@@ -6,43 +6,39 @@
 <title>Tahlil dan Maulid</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Amiri:wght@400;700&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 /* Layout idea: emerald-and-gold prayer book. Home = two kitab covers; reader = one long scroll of numbered bahagian, Arabic page above its Malay translation. */
 :root{
-  --bg:#edf0e8;
-  --panel:#fbfbf6;
-  --ink:#10251e;
-  --text:#22332c;
-  --muted:#5d716a;
-  --emerald:#0d5a47;
-  --emerald-deep:#093d31;
-  --gold:#8f6b17;
-  --gold-soft:#c9a24a;
-  --line:#d3d9cb;
-  --shadow:0 1px 2px rgba(9,61,49,.08),0 8px 28px rgba(9,61,49,.08);
-  --display:"Cormorant Garamond","Palatino Linotype",Georgia,serif;
-  --body:"Literata",Georgia,"Times New Roman",serif;
-  --ui:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --fs:19px;
-  --afs:32px;
-  color-scheme:light;
+  --bg:#EDF5F0;--panel:rgba(255,255,255,.82);--sheetbg:#F4FAF6;--ink:#0B2018;--text:#0B2018;--muted:#58736A;
+  --emerald:#0B7A55;--emerald-deep:#075238;--gold:#0B7A55;--gold-soft:#0B7A55;--accent-ink:#FFFFFF;--line:rgba(10,60,40,.11);
+  --shadow:rgba(20,70,50,.12) 0 8px 28px;
+  --glow1:#A9E4C6;--glow2:#CBEFDB;--glow3:#B7E9D0;--glow-op:.85;
+  --display:"Outfit","Inter",system-ui,sans-serif;
+  --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --ui:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --fs:19px;--afs:32px;color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#08171a;--panel:#0f2a29;--ink:#f1e8cc;--text:#dfe5d8;--muted:#92aaa2;
-    --emerald:#7fd1b4;--emerald-deep:#0b3a31;--gold:#e0bd68;--gold-soft:#d4af5a;--line:#1f423e;
-    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 28px rgba(0,0,0,.35);color-scheme:dark;
+    --bg:#050A08;--panel:rgba(255,255,255,.065);--sheetbg:#0E1A15;--ink:#E9F4EE;--text:#E9F4EE;--muted:#84A092;
+    --emerald:#7BEFB2;--emerald-deep:#15523A;--gold:#7BEFB2;--gold-soft:#7BEFB2;--accent-ink:#03160C;--line:rgba(255,255,255,.085);
+    --shadow:rgba(0,0,0,.28) 0 8px 28px;--glow1:#1D6B49;--glow2:#15523A;--glow3:#0F4533;--glow-op:.55;color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#08171a;--panel:#0f2a29;--ink:#f1e8cc;--text:#dfe5d8;--muted:#92aaa2;
-  --emerald:#7fd1b4;--emerald-deep:#0b3a31;--gold:#e0bd68;--gold-soft:#d4af5a;--line:#1f423e;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 28px rgba(0,0,0,.35);color-scheme:dark;
+  --bg:#050A08;--panel:rgba(255,255,255,.065);--sheetbg:#0E1A15;--ink:#E9F4EE;--text:#E9F4EE;--muted:#84A092;
+  --emerald:#7BEFB2;--emerald-deep:#15523A;--gold:#7BEFB2;--gold-soft:#7BEFB2;--accent-ink:#03160C;--line:rgba(255,255,255,.085);
+  --shadow:rgba(0,0,0,.28) 0 8px 28px;--glow1:#1D6B49;--glow2:#15523A;--glow3:#0F4533;--glow-op:.55;color-scheme:dark;
 }
+#glow{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:var(--bg)}
+#glow i{position:absolute;border-radius:50%;filter:blur(70px);opacity:var(--glow-op)}
+#glow i:nth-child(1){width:70vmax;height:55vmax;left:-25vmax;top:-18vmax;background:radial-gradient(closest-side,var(--glow1),transparent)}
+#glow i:nth-child(2){width:60vmax;height:50vmax;right:-28vmax;top:22vh;background:radial-gradient(closest-side,var(--glow2),transparent)}
+#glow i:nth-child(3){width:65vmax;height:50vmax;left:-10vmax;bottom:-24vmax;background:radial-gradient(closest-side,var(--glow3),transparent)}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.6;min-height:100%}
+body{margin:0;background:transparent;color:var(--text);font-family:var(--body);line-height:1.6;min-height:100%}
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--gold-soft);outline-offset:2px;border-radius:6px}
 [hidden]{display:none!important}
@@ -79,7 +75,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .prog{height:3px;background:transparent}
 .prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold-soft),var(--emerald))}
 .read{max-width:760px;margin:0 auto;padding:6px 14px 120px}
-.sec{padding-top:34px;scroll-margin-top:70px}
+.sec{padding-top:18px;scroll-margin-top:70px}
 .sec-h{display:flex;gap:14px;align-items:center;margin-bottom:14px}
 .badge{flex:none;width:54px;height:54px;color:var(--gold);position:relative;display:grid;place-items:center}
 .badge svg{position:absolute;inset:0;width:100%;height:100%}
@@ -87,7 +83,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .sec-h h2{font-family:var(--display);font-size:28px;line-height:1.05;margin:0;color:var(--emerald);text-wrap:balance}
 .sec-h p{margin:3px 0 0;font-family:var(--ui);font-size:13px;color:var(--muted)}
 .pg{display:inline-block;font-family:var(--ui);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
-.arab{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px}
+.arab{background:var(--panel);backdrop-filter:blur(22px) saturate(1.25);-webkit-backdrop-filter:blur(22px) saturate(1.25);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px}
 .arab-in{width:100%;padding:18px 14px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .atxt{width:100%;direction:rtl;text-align:right;font-family:"Amiri","Scheherazade New","Traditional Arabic",serif;font-size:var(--afs);line-height:2.05;color:var(--ink);font-feature-settings:"liga","calt"}
 .atxt .ah{text-align:center;font-weight:700;font-size:1.08em;margin:.1em 0 .25em;line-height:1.9}
@@ -118,7 +114,7 @@ img.ar{display:block;height:auto}
 .refrain .ar{color:var(--ink);aspect-ratio:var(--r);width:var(--w);max-width:100%;margin:0 auto}
 .refrain .arab-in{padding:4px 0}
 .refrain p{font-size:calc(var(--fs) * .82);font-style:italic;color:var(--muted);margin:10px 0 0;text-align:center}
-.callout{margin:26px 0 6px;padding:16px;border-radius:16px;text-align:center;font-family:var(--display);font-size:26px;font-weight:700;color:#f4ecd2;background:linear-gradient(160deg,#0f6a54,#082f27);position:relative;overflow:hidden}
+.callout{margin:26px 0 6px;padding:16px;border-radius:16px;text-align:center;font-family:var(--display);font-size:26px;font-weight:500;color:var(--accent-ink);background:var(--emerald);position:relative;overflow:hidden}
 .callout::before{content:"";position:absolute;inset:0;opacity:.3;background-size:56px 56px}
 .callout span{position:relative}
 .mode-arab .tr{display:none}
@@ -136,7 +132,7 @@ img.ar{display:block;height:auto}
 /* ---------- Sheets ---------- */
 .scrim{position:fixed;inset:0;background:rgba(3,15,12,.5);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
 .scrim.on{opacity:1;pointer-events:auto}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;max-width:620px;margin:0 auto;background:var(--panel);border-radius:22px 22px 0 0;border:1px solid var(--line);border-bottom:0;box-shadow:0 -12px 40px rgba(0,0,0,.25);padding:10px 18px 26px;transform:translateY(105%);transition:transform .25s;max-height:82%;overflow:auto;font-family:var(--ui)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;max-width:620px;margin:0 auto;background:var(--sheetbg);border-radius:22px 22px 0 0;border:1px solid var(--line);border-bottom:0;box-shadow:0 -12px 40px rgba(0,0,0,.25);padding:10px 18px 26px;transform:translateY(105%);transition:transform .25s;max-height:82%;overflow:auto;font-family:var(--ui)}
 .sheet.on{transform:none}
 .grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
 .sheet h3{font-family:var(--display);font-size:24px;margin:0 0 12px;color:var(--emerald)}
@@ -144,7 +140,7 @@ img.ar{display:block;height:auto}
 .row>label,.row>.l{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
 .seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .seg button{flex:1;border:0;background:none;padding:10px 6px;font-size:14px}
-.seg button[aria-pressed="true"]{background:var(--emerald);color:var(--panel)}
+.seg button[aria-pressed="true"]{background:var(--emerald);color:var(--accent-ink)}
 .seg button+button{border-left:1px solid var(--line)}
 input[type=range]{width:100%;accent-color:var(--emerald)}
 .hint{font-size:12px;color:var(--muted);margin-top:6px}
@@ -154,15 +150,15 @@ input[type=range]{width:100%;accent-color:var(--emerald)}
 .toc a b{display:block;font-family:var(--display);font-size:19px;line-height:1.1;font-weight:700}
 .toc a small{color:var(--muted);font-size:12px}
 .toc a[aria-current="true"]{background:color-mix(in srgb,var(--emerald) 12%,transparent)}
-.toc a[aria-current="true"] .n{background:var(--emerald);color:var(--panel)}
+.toc a[aria-current="true"] .n{background:var(--emerald);color:var(--accent-ink)}
 .tasbih{text-align:center}
 .count{font-family:var(--display);font-size:76px;font-weight:700;line-height:1;color:var(--emerald);font-variant-numeric:tabular-nums}
 .count small{font-size:24px;color:var(--muted);font-weight:500}
-.tap{width:min(240px,70%);aspect-ratio:1;border-radius:50%;border:0;margin:18px auto 8px;display:grid;place-items:center;font-size:17px;letter-spacing:.04em;color:#f4ecd2;background:radial-gradient(circle at 35% 30%,#1b8266,#0a4638 70%);box-shadow:inset 0 0 0 6px rgba(229,194,108,.5),var(--shadow);transition:transform .08s;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.tap{width:min(240px,70%);aspect-ratio:1;border-radius:50%;border:0;margin:18px auto 8px;display:grid;place-items:center;font-size:17px;letter-spacing:.04em;color:var(--accent-ink);background:var(--emerald);box-shadow:inset 0 0 0 6px rgba(255,255,255,.3),var(--shadow);transition:transform .08s;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 .tap:active{transform:scale(.96)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .chips button{border:1px solid var(--line);background:none;border-radius:999px;padding:7px 14px;font-size:14px}
-.chips button[aria-pressed="true"]{background:var(--emerald);color:var(--panel);border-color:var(--emerald)}
+.chips button[aria-pressed="true"]{background:var(--emerald);color:var(--accent-ink);border-color:var(--emerald)}
 .done{color:var(--gold);font-weight:600;min-height:1.4em;margin-top:4px}
 .reset{margin-top:10px;border:0;background:none;color:var(--muted);text-decoration:underline;font-size:14px}
 @media (min-width:640px){
@@ -173,6 +169,7 @@ input[type=range]{width:100%;accent-color:var(--emerald)}
 </style>
 </head>
 <body>
+<div id="glow" aria-hidden="true"><i></i><i></i><i></i></div>
 
 <section id="reader">
   <header class="bar">
@@ -285,11 +282,8 @@ input[type=range]{width:100%;accent-color:var(--emerald)}
   function refrainBox(im){
     return '<div class="refrain"><div class="ar-box"><div class="arab-in ar-txt"><div class="atxt" lang="ar" dir="rtl"><p class="ap ac">'+esc(im.t)+'</p></div></div><div class="arab-in ar-img">'+ar(im,'',true)+'</div></div><p>'+esc(REFRAIN)+'</p></div>';
   }
-  function secHead(s){
-    return '<div class="sec-h"><div class="badge">'+BADGE+'<span>'+s.n+'</span></div><div><span class="pg">Hal. '+s.pages+'</span><h2>'+esc(s.title)+'</h2><p>'+esc(s.sub)+'</p></div></div>';
-  }
   function renderSec(s,i,total){
-    var h='<section class="sec" id="s-'+s.id+'" data-i="'+i+'">'+secHead(s);
+    var h='<section class="sec" id="s-'+s.id+'" data-i="'+i+'">';
     if(s.head){ h+=arabPanel(s.head); }
     if(s.arab){ h+=arabPanel(s.arab); }
     if(s.items){
@@ -302,9 +296,7 @@ input[type=range]{width:100%;accent-color:var(--emerald)}
       if(s.callout) h+='<div class="callout"><span>'+esc(s.callout)+'</span></div>';
     }
     if(s.blocks){ h+='<div class="tr"><div class="lbl">Terjemahan</div>'+blocks(s.blocks)+'</div>'; }
-    var prev=book[i-1], next=book[i+1];
-    h+='<div class="nav"><button type="button" data-go="'+(i-1)+'" '+(prev?'':'disabled')+'><small>Sebelumnya</small><b>'+(prev?esc(prev.title):'—')+'</b></button>'+
-       '<button type="button" data-go="'+(i+1)+'" '+(next?'':'disabled')+'><small>Berikutnya</small><b>'+(next?esc(next.title):'Selesai')+'</b></button></div><div class="divider"></div></section>';
+    h+='<div class="divider"></div></section>';
     return h;
   }
   /* ---- reader control ---- */
