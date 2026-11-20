@@ -59,7 +59,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .stack{display:flex;flex-direction:column;gap:12px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .rise{animation:rise .6s var(--ease) both;animation-delay:calc(var(--i,0)*70ms)}
-@keyframes rise{from{opacity:0;filter:blur(10px);transform:translateY(12px)}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
 
 /* Kepala */
 .hd{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:calc(26px + env(safe-area-inset-top,0px)*0) 2px 20px}
@@ -485,12 +485,13 @@ function markNav(animate){
 }
 function go(t){
   if(t===view)return;
+  var ix=function(k){return TABS.findIndex(function(x){return x[0]===k})},dir=ix(t)>ix(view)?1:-1;
   view=t;try{history.replaceState(null,'','#'+t)}catch(e){}
   markNav(true);
   var v=$('view'),red=matchMedia('(prefers-reduced-motion:reduce)').matches;
   if(red||!v.animate){render();window.scrollTo(0,0);return}
-  var out=v.animate([{opacity:1,filter:'blur(0)'},{opacity:0,filter:'blur(12px)',transform:'translateY(6px)'}],{duration:170,easing:'ease-in',fill:'forwards'});
-  out.onfinish=function(){render();window.scrollTo(0,0);out.cancel();v.animate([{opacity:0,filter:'blur(12px)'},{opacity:1,filter:'blur(0)'}],{duration:340,easing:'cubic-bezier(.3,.8,.2,1)'})};
+  var out=v.animate([{opacity:1,transform:'translateX(0)'},{opacity:0,transform:'translateX('+(-dir*48)+'px)'}],{duration:180,easing:'cubic-bezier(.4,0,1,1)',fill:'forwards'});
+  out.onfinish=function(){render();window.scrollTo(0,0);out.cancel();v.animate([{opacity:0,transform:'translateX('+(dir*48)+'px)'},{opacity:1,transform:'translateX(0)'}],{duration:340,easing:'cubic-bezier(.2,.8,.2,1)'})};
 }
 
 document.addEventListener('click',function(ev){
