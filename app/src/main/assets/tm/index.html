@@ -113,14 +113,14 @@ img.ar{display:block;height:auto}
 .refrain{margin:6px 0 22px;border-radius:16px;border:1px dashed color-mix(in srgb,var(--gold-soft) 70%,transparent);padding:14px 12px 12px;background:color-mix(in srgb,var(--panel) 70%,transparent)}
 .refrain .ar{color:var(--ink);aspect-ratio:var(--r);width:var(--w);max-width:100%;margin:0 auto}
 .refrain .arab-in{padding:4px 0}
-.refrain p{font-size:calc(var(--fs) * .82);font-style:italic;color:var(--muted);margin:10px 0 0;text-align:center}
+.refrain>p{font-size:calc(var(--fs) * .82);font-style:italic;color:var(--muted);margin:10px 0 0;text-align:center}
 .callout{margin:26px 0 6px;padding:16px;border-radius:16px;text-align:center;font-family:var(--display);font-size:26px;font-weight:500;color:var(--accent-ink);background:var(--emerald);position:relative;overflow:hidden}
 .callout::before{content:"";position:absolute;inset:0;opacity:.3;background-size:56px 56px}
 .callout span{position:relative}
 .mode-arab .tr{display:none}
 .mode-trans .arab,.mode-trans .refrain .ar-box{display:none}
 .mode-trans .refrain{border-style:solid}
-.mode-arab .refrain p{display:none}
+.mode-arab .refrain>p{display:none}
 .nav{display:flex;gap:10px;margin:26px 0 6px;font-family:var(--ui)}
 .nav button{flex:1;padding:13px 12px;border-radius:14px;border:1px solid var(--line);background:var(--panel);font-size:14px;text-align:left;display:flex;flex-direction:column;gap:2px}
 .nav button small{color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
