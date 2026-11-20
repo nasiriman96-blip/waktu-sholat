@@ -10,7 +10,7 @@ android {
         applicationId 'id.waktusholat.app'
         minSdk 27
         targetSdk 34
-        versionCode (System.getenv('GITHUB_RUN_NUMBER') ?: '1').toInteger()
+        versionCode Integer.parseInt(System.getenv('GITHUB_RUN_NUMBER') ?: '1')
         versionName '1.0'
     }
     signingConfigs {
