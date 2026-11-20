@@ -153,6 +153,8 @@ nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(sa
 .zar.s{font-size:calc(30px*var(--zs))}.zar.m{font-size:calc(27px*var(--zs))}.zar.l{font-size:calc(23px*var(--zs))}
 .zar .mk{color:var(--accent);font-size:.8em;margin:0 3px}
 .zta,.zbis{font-family:var(--font-ar);direction:rtl;color:var(--accent);font-size:21px;margin-bottom:8px}
+.zdiv{height:1px;background:var(--line);margin:18px 0 20px}
+.zar.zth{color:var(--accent)}
 .zmean{color:var(--muted);font-size:14px;line-height:1.7;text-align:left;margin-top:6px}
 .znote{display:inline-block;margin-top:12px;padding:5px 12px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-size:12.5px;font-weight:500}
 .zdock{padding:12px 0 calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:8px;border-top:1px solid var(--line)}
@@ -310,6 +312,8 @@ nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(sa
     ]},
   ];
 
+  /* Bagian 2: tiap ayat (1x) digabung satu halaman dengan kalimat penutupnya (3x) */
+  (function(){var it=SECTIONS[1].items,m=[];for(var i=0;i+1<it.length;i+=2){m.push(Object.assign({},it[i],{then:{ayat:it[i+1].ayat,meaning:it[i+1].meaning},target:it[i+1].target,note:'Ayat 1×, lalu kalimat di bawah '+it[i+1].target+'×'}))}SECTIONS[1].items=m})();
   var DZIKIR=[];SECTIONS.forEach(function(s,si){s.items.forEach(function(it){DZIKIR.push(Object.assign({},it,{sectionIndex:si}))})});
 
 
@@ -416,6 +420,7 @@ function setHTML(){
 /* ---------- Sesi zikir ---------- */
 function zSecStart(si){var n=0;for(var i=0;i<si;i++)n+=SECTIONS[i].items.length;return n}
 function zOpen(si){
+  if(!zsel)zsel=S.last||guess();
   zs={p:zsel,idx:zSecStart(si),count:0,lock:false};
   S.last=zsel;save();
   $('zov').style.setProperty('--zs',{m:1,l:1.15,xl:1.3}[S.font||'m']);
@@ -439,7 +444,7 @@ function zRender(first){
   h='<div class="zin"><div class="ztop"><b><span>Zikir</span>'+pn+'</b><button class="ib" data-act="zclose" aria-label="Tutup">'+ico('x',20,2)+'</button></div>'
    +'<div class="zprog">'+prog+'</div><div class="zmeta"><span>'+esc(sec)+'</span><span class="num">'+(zs.idx+1)+' / '+DZIKIR.length+'</span></div>'
    +'<div class="zbody" id="zbody">'+(d.taawwudz?'<div class="zta">'+d.taawwudz+'</div>':'')+(d.bismillah?'<div class="zbis">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>':'')
-   +'<div class="zar '+zLen(d)+'">'+seg+'</div><div class="zmean">'+esc(d.meaning)+'</div>'+(d.note?'<span class="znote">'+esc(d.note)+'</span>':'')+'<div class="zhint">Ketuk di mana saja pada layar untuk menghitung</div></div>'
+   +'<div class="zar '+zLen(d)+'">'+seg+'</div><div class="zmean">'+esc(d.meaning)+'</div>'+(d.then?'<div class="zdiv"></div><div class="zar zth m">'+d.then.ayat.join(' <span class="mk">•</span> ')+'</div><div class="zmean">'+esc(d.then.meaning)+'</div>':'')+(d.note?'<span class="znote">'+esc(d.note)+'</span>':'')+'<div class="zhint">Ketuk di mana saja pada layar untuk menghitung</div></div>'
    +'<div class="zdock">'+(rem>10?'<button class="zq" data-act="ztap" data-n="10">+10 sekaligus</button>':'')
    +'<div class="zrow"><button class="zside" data-act="zprev">Sebelumnya</button>'
    +'<button class="zring" data-act="ztap" data-n="1" aria-label="Hitung satu"><svg viewBox="0 0 200 200"><circle class="bg" cx="100" cy="100" r="'+RR+'"/><circle class="fg" id="zfg" cx="100" cy="100" r="'+RR+'" stroke-dasharray="'+CIRC+'" stroke-dashoffset="'+(CIRC-Math.min(zs.count/d.target,1)*CIRC)+'"/></svg><div class="c"><b id="zc">'+zs.count+'</b><span>dari '+d.target+'</span></div></button>'
