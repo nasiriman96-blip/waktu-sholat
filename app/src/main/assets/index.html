@@ -274,8 +274,9 @@ nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(sa
     ]},
     { title: "Bagian 3 · Zikir Ayat Kursiy", items: [
       { ...FATEHAH, target:1 },
-      { taawwudz:`أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ`, bismillah:true, ayat:[`اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ، لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ، لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ، مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ، يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ، وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ، وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ`],
-        meaning:`Aku berlindung dengan Allah dari syaitan yang terkutuk. Dengan nama Allah yang Maha Pemurah lagi Maha Penyayang. Allah, tiada Tuhan melainkan Dia, yang hidup dan mencukupi dengan sendirinya. Dia tidak mengantuk atau tidur. Dia menguasai segala yang ada di langit dan bumi. Tidak boleh menolong di sisi-Nya melainkan dengan izin-Nya. Dia tahu apa yang di hadapan dan di belakang mereka, dan mereka tidak boleh tahu apa-apa dari ilmu-Nya melainkan dengan kehendak-Nya. Takhta kerajaan-Nya seluas langit dan bumi. Dia tidak penat memelihara keduanya kerana Dia Maha Kuasa lagi Maha Besar. (Al-Baqarah: 255)`, target:3, note:'Dibaca dalam satu nafas' },
+      { taawwudz:`أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ`, bismillah:true, ayat:[`اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ، لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ، لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ، مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ، يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ، وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ`],
+        then:{ayat:[`وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ`],meaning:`Dia tidak penat memelihara keduanya kerana Dia Maha Kuasa lagi Maha Besar. (Al-Baqarah: 255)`},
+        meaning:`Aku berlindung dengan Allah dari syaitan yang terkutuk. Dengan nama Allah yang Maha Pemurah lagi Maha Penyayang. Allah, tiada Tuhan melainkan Dia, yang hidup dan mencukupi dengan sendirinya. Dia tidak mengantuk atau tidur. Dia menguasai segala yang ada di langit dan bumi. Tidak boleh menolong di sisi-Nya melainkan dengan izin-Nya. Dia tahu apa yang di hadapan dan di belakang mereka, dan mereka tidak boleh tahu apa-apa dari ilmu-Nya melainkan dengan kehendak-Nya. Takhta kerajaan-Nya seluas langit dan bumi.`, target:3, note:'Kalimat hijau dibaca 3× dalam satu nafas' },
       { bismillah:false, ayat:[`أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ`], meaning:`Aku memohon keampunan dari Allah yang Maha Agung.`, target:3 },
       { ...FATEHAH, target:1 },
       { ...IKHLAS, target:3 },
@@ -313,7 +314,7 @@ nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(sa
   ];
 
   /* Bagian 2: tiap ayat (1x) digabung satu halaman dengan kalimat penutupnya (3x) */
-  (function(){var it=SECTIONS[1].items,m=[];for(var i=0;i+1<it.length;i+=2){m.push(Object.assign({},it[i],{then:{ayat:it[i+1].ayat,meaning:it[i+1].meaning},target:it[i+1].target,note:'Ayat 1×, lalu kalimat di bawah '+it[i+1].target+'×'}))}SECTIONS[1].items=m})();
+  (function(){var it=SECTIONS[1].items,m=[];for(var i=0;i+1<it.length;i+=2){m.push(Object.assign({},it[i],{then:{ayat:it[i+1].ayat,meaning:it[i+1].meaning},target:1}))}SECTIONS[1].items=m})();
   var DZIKIR=[];SECTIONS.forEach(function(s,si){s.items.forEach(function(it){DZIKIR.push(Object.assign({},it,{sectionIndex:si}))})});
 
 
