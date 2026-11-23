@@ -124,6 +124,8 @@ h2.t{font:400 13px/1 var(--font-body);letter-spacing:.09em;text-transform:upperc
 .sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .3s var(--ease)}
 .sw.on{background:var(--accent)}
 .sw.on::after{transform:translateX(20px);background:var(--accent-ink)}
+.sel{background:var(--panel);color:var(--fg);border:0;border-radius:12px;padding:9px 8px;font:inherit;font-size:13.5px;max-width:132px}
+.btn2{padding:9px 12px;border-radius:12px;background:var(--panel);color:var(--accent);font-weight:500;font-size:13px;white-space:nowrap}
 .seg{display:inline-flex;background:var(--panel);border-radius:12px;padding:3px;flex:none}
 .seg button{padding:8px 13px;border-radius:9px;font-weight:500;font-size:13.5px;color:var(--muted);min-height:36px;transition:.25s}
 .seg button.on{background:var(--accent);color:var(--accent-ink)}
@@ -365,6 +367,23 @@ function vib(p){
 function toast(m){var t=$('toast');t.textContent=m;t.className='show';clearTimeout(toast.t);toast.t=setTimeout(function(){t.className=''},2800)}
 
 /* ---------- Catatan zikir ---------- */
+var CITIES=[['Banda Aceh',5.5483,95.3238],['Medan',3.5952,98.6722],['Padang',-0.9471,100.4172],['Pekanbaru',0.5071,101.4478],['Batam',1.0456,104.0305],['Jambi',-1.6101,103.6131],['Palembang',-2.9761,104.7754],['Bengkulu',-3.8004,102.2655],['Bandar Lampung',-5.3971,105.2668],['Pangkalpinang',-2.1316,106.1169],['Jakarta',-6.2088,106.8456],['Serang',-6.1201,106.1503],['Bandung',-6.9175,107.6191],['Semarang',-6.9667,110.4167],['Yogyakarta',-7.7956,110.3695],['Surabaya',-7.2575,112.7521],['Malang',-7.9666,112.6326],['Denpasar',-8.6705,115.2126],['Mataram',-8.5833,116.1167],['Sumbawa Besar',-8.4933,117.4202],['Bima',-8.4606,118.7266],['Kupang',-10.1772,123.607],['Pontianak',-0.0263,109.3425],['Palangka Raya',-2.2161,113.9135],['Banjarmasin',-3.3194,114.5908],['Samarinda',-0.5022,117.1536],['Balikpapan',-1.2379,116.8529],['Tarakan',3.3,117.6333],['Manado',1.4748,124.8421],['Gorontalo',0.5435,123.0568],['Palu',-0.8917,119.8707],['Mamuju',-2.6748,118.8886],['Makassar',-5.1477,119.4327],['Kendari',-3.9985,122.5129],['Ambon',-3.6954,128.1814],['Ternate',0.7833,127.3667],['Sorong',-0.8762,131.2558],['Jayapura',-2.5337,140.7181]];
+function NT(){try{return window.AndroidBridge&&AndroidBridge.getNotif?JSON.parse(AndroidBridge.getNotif()):null}catch(e){return null}}
+function ntSave(o){try{AndroidBridge.setNotif(JSON.stringify(o))}catch(e){}}
+function ntCity(o,c){o.city=c[0];o.lat=c[1];o.lon=c[2]}
+window.onLoc=function(lat,lon){
+  var o=NT()||{};
+  if(lat==null){toast('Lokasi tidak tersedia, pilih kota secara manual');if(o.lat==null)ntCity(o,CITIES[CITIES.findIndex(function(c){return c[0]==='Makassar'})])}
+  else{o.city='Lokasi saya';o.lat=lat;o.lon=lon}
+  ntSave(o);if(view==='setelan')render();
+};
+window.onNotifPerm=function(ok){if(!ok)toast('Izin notifikasi ditolak');if(view==='setelan')render()};
+window.__pick=function(p){
+  if(!ZP.some(function(x){return x[0]===p}))return;
+  zsel=p;S.last=p;save();
+  if(zs)zClose();
+  if(view!=='zikir')go('zikir');else render();
+};
 var zsel=null,zs=null,RR=88,CIRC=2*Math.PI*RR,resetArm=false;
 function guess(){var d=new Date(),h=d.getHours()+d.getMinutes()/60;return (h>=3&&h<10.5)?'fajr':h<14.75?'dhuhr':h<17.5?'asr':h<19?'maghrib':'isha'}
 function zDone(is){return (S.zdone&&S.zdone[is])||{}}
@@ -421,6 +440,20 @@ function setHTML(){
    +tmRow('Tulisan Arab','src','text',[['text','Teks'],['img','Gambar asli']])
    +tmRow('Ukuran terjemahan','tfs','m',[['s','Kecil'],['m','Sedang'],['l','Besar']])
    +'</section>';
+  var N=NT();
+  h+='<h2 class="t">Notifikasi zikir</h2><section class="panel rise" style="--i:3">';
+  if(!N){h+='<div class="row" style="border-top:0"><div><b>Tersedia di aplikasi Android</b><small>Pengingat zikir setelah sholat hanya berjalan di aplikasi Android.</small></div></div>'}
+  else{
+    h+='<div class="row" style="border-top:0"><div><b>Ingatkan zikir ba’da sholat</b><small>Notifikasi setelah masuk waktu sholat</small></div><div class="seg">'+[['0','Mati'],['1','Hidup']].map(function(x){return '<button data-act="ntset" data-k="on" data-v="'+x[0]+'" class="'+((N.on?'1':'0')===x[0]?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div></div>';
+    if(N.on){
+      var ci=CITIES.findIndex(function(c){return c[0]===N.city});
+      h+='<div class="row"><div><b>Lokasi</b><small>'+(N.city==='Lokasi saya'?'Dari GPS/jaringan':'Pilih kota terdekat')+'</small></div><div style="display:flex;gap:8px;align-items:center"><select class="sel" id="ntcity">'+(ci<0?'<option selected>'+esc(N.city||'Pilih kota')+'</option>':'')+CITIES.map(function(c,i){return '<option value="'+i+'"'+(i===ci?' selected':'')+'>'+c[0]+'</option>'}).join('')+'</select><button class="btn2" data-act="ntloc">Lokasi saya</button></div></div>';
+      h+='<div class="row"><div><b>Jeda (menit)</b><small>Setelah masuk waktu</small></div><div class="seg">'+[10,15,20,30].map(function(m){return '<button data-act="ntset" data-k="delay" data-v="'+m+'" class="'+(N.delay===m?'on':'')+'">'+m+'</button>'}).join('')+'</div></div>';
+      h+='<div class="row" style="flex-direction:column;align-items:stretch;gap:10px"><div><b>Sholat yang diingatkan</b></div><div class="seg" style="display:flex">'+ZP.map(function(p,i){return '<button style="flex:1;padding:8px 2px" data-act="ntset" data-k="bit" data-v="'+i+'" class="'+((N.mask>>i)&1?'on':'')+'">'+p[1]+'</button>'}).join('')+'</div></div>';
+      h+='<div class="row" style="flex-direction:column;align-items:flex-start;gap:4px"><small>'+(N.times?'Waktu sholat hari ini: '+ZP.map(function(p,i){return p[1]+' '+N.times[i].replace(':','.')}).join(' · '):'Pilih lokasi untuk menghitung waktu sholat.')+'</small>'+(N.perm?'':'<small style="color:var(--danger,#e5534b)">Izin notifikasi belum diberikan. Aktifkan lewat Setelan Android &gt; Aplikasi &gt; Zikir Sholat &gt; Notifikasi.</small>')+'<small>Dihitung di perangkat (metode Kemenag RI) tanpa internet.</small></div>';
+    }
+  }
+  h+='</section>';
   h+='<section class="panel rise" style="--i:3;margin-top:12px"><div class="row"><div><b class="'+(resetArm?'danger':'')+'">Hapus catatan zikir</b><small>'+(resetArm?'Semua catatan dan hari berturut-turut akan hilang. Ketuk lagi untuk memastikan.':'Menghapus riwayat zikir yang tersimpan di perangkat ini.')+'</small></div><button class="btn ghost'+(resetArm?' danger':'')+'" data-act="reset">'+(resetArm?'Ya, hapus':'Hapus')+'</button></div></section>';
   h+='<p class="note rise" style="--i:3;margin:16px 4px">Isi bacaan diambil dari berkas Dzikir Ba’da Sholat milik Anda. Catatan tersimpan di perangkat ini saja.</p>';
   return h;
@@ -508,6 +541,7 @@ function go(t){
   out.onfinish=function(){render();window.scrollTo(0,0);out.cancel();v.animate([{opacity:0,transform:'translateX('+(dir*48)+'px)'},{opacity:1,transform:'translateX(0)'}],{duration:340,easing:'cubic-bezier(.2,.8,.2,1)'})};
 }
 
+document.addEventListener('change',function(ev){if(ev.target.id!=='ntcity')return;var o=NT();if(!o)return;ntCity(o,CITIES[+ev.target.value]);ntSave(o);render()});
 document.addEventListener('click',function(ev){
   var t=ev.target.closest('[data-tab],[data-act]');
   if(!t){
@@ -528,6 +562,14 @@ document.addEventListener('click',function(ev){
   else if(a==='vibtog'){S.vibrate=!(S.vibrate!==false);save();if(S.vibrate)vib([90,70,90]);render()}
   else if(a==='theme'){S.theme=t.dataset.v;save();applyTheme();render()}
   else if(a==='font'){S.font=t.dataset.v;save();render()}
+  else if(a==='ntset'){
+    var o=NT();if(!o)return;
+    if(k==='on'){o.on=t.dataset.v==='1';if(o.on&&o.lat==null)AndroidBridge.useLocation()}
+    else if(k==='delay')o.delay=+t.dataset.v;
+    else if(k==='bit')o.mask=(o.mask^(1<<+t.dataset.v))&31;
+    ntSave(o);render();
+  }
+  else if(a==='ntloc'){try{AndroidBridge.useLocation();toast('Mencari lokasi…')}catch(e){}}
   else if(a==='tmset'){S.tm=S.tm||{};S.tm[k]=t.dataset.v;save();render()}
   else if(a==='reset'){
     if(!resetArm){resetArm=true;render();clearTimeout(go.rt);go.rt=setTimeout(function(){resetArm=false;if(view==='setelan')render()},5000)}
