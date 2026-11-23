@@ -124,6 +124,7 @@ h2.t{font:400 13px/1 var(--font-body);letter-spacing:.09em;text-transform:upperc
 .sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .3s var(--ease)}
 .sw.on{background:var(--accent)}
 .sw.on::after{transform:translateX(20px);background:var(--accent-ink)}
+.still .rise{animation:none!important}
 .sel{background:var(--panel);color:var(--fg);border:0;border-radius:12px;padding:9px 8px;font:inherit;font-size:13.5px;max-width:132px}
 .btn2{padding:9px 12px;border-radius:12px;background:var(--panel);color:var(--accent);font-weight:500;font-size:13px;white-space:nowrap}
 .seg{display:inline-flex;background:var(--panel);border-radius:12px;padding:3px;flex:none}
@@ -375,9 +376,9 @@ window.onLoc=function(lat,lon){
   var o=NT()||{};
   if(lat==null){toast('Lokasi tidak tersedia, pilih kota secara manual');if(o.lat==null)ntCity(o,CITIES[CITIES.findIndex(function(c){return c[0]==='Makassar'})])}
   else{o.city='Lokasi saya';o.lat=lat;o.lon=lon}
-  ntSave(o);if(view==='setelan')render();
+  ntSave(o);if(view==='setelan')render(1);
 };
-window.onNotifPerm=function(ok){if(!ok)toast('Izin notifikasi ditolak');if(view==='setelan')render()};
+window.onNotifPerm=function(ok){if(!ok)toast('Izin notifikasi ditolak');if(view==='setelan')render(1)};
 window.__pick=function(p){
   if(!ZP.some(function(x){return x[0]===p}))return;
   zsel=p;S.last=p;save();
@@ -514,7 +515,7 @@ try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTh
 
 /* ---------- Kerangka, navigasi, transisi ---------- */
 var RENDER={zikir:homeHTML,bacaan:bacaanHTML,setelan:setHTML};
-function render(){$('view').innerHTML=RENDER[view]()}
+function render(st){var v=$('view');v.classList.toggle('still',!!st);v.innerHTML=RENDER[view]()}
 function buildNav(){
   var n=$('navin');
   TABS.forEach(function(t){var b=document.createElement('button');b.dataset.tab=t[0];b.innerHTML=ico(t[2],20,1.9)+'<span>'+t[1]+'</span>';n.appendChild(b)});
@@ -541,7 +542,7 @@ function go(t){
   out.onfinish=function(){render();window.scrollTo(0,0);out.cancel();v.animate([{opacity:0,transform:'translateX('+(dir*48)+'px)'},{opacity:1,transform:'translateX(0)'}],{duration:340,easing:'cubic-bezier(.2,.8,.2,1)'})};
 }
 
-document.addEventListener('change',function(ev){if(ev.target.id!=='ntcity')return;var o=NT();if(!o)return;ntCity(o,CITIES[+ev.target.value]);ntSave(o);render()});
+document.addEventListener('change',function(ev){if(ev.target.id!=='ntcity')return;var o=NT();if(!o)return;ntCity(o,CITIES[+ev.target.value]);ntSave(o);render(1)});
 document.addEventListener('click',function(ev){
   var t=ev.target.closest('[data-tab],[data-act]');
   if(!t){
@@ -553,27 +554,27 @@ document.addEventListener('click',function(ev){
   }
   if(t.dataset.tab){go(t.dataset.tab);return}
   var a=t.dataset.act,k=t.dataset.k;
-  if(a==='zsel'){zsel=k;S.last=k;save();render()}
+  if(a==='zsel'){zsel=k;S.last=k;save();render(1)}
   else if(a==='zstart')zOpen(+t.dataset.s);
   else if(a==='zclose')zClose();
   else if(a==='ztap')zTap(+t.dataset.n);
   else if(a==='zskip'&&zs){zs.idx++;zs.count=0;vib(30);zRender()}
   else if(a==='zprev'&&zs){if(zs.count>0)zs.count=0;else zs.idx=Math.max(0,zs.idx-1);vib(30);zRender()}
-  else if(a==='vibtog'){S.vibrate=!(S.vibrate!==false);save();if(S.vibrate)vib([90,70,90]);render()}
-  else if(a==='theme'){S.theme=t.dataset.v;save();applyTheme();render()}
-  else if(a==='font'){S.font=t.dataset.v;save();render()}
+  else if(a==='vibtog'){S.vibrate=!(S.vibrate!==false);save();if(S.vibrate)vib([90,70,90]);render(1)}
+  else if(a==='theme'){S.theme=t.dataset.v;save();applyTheme();render(1)}
+  else if(a==='font'){S.font=t.dataset.v;save();render(1)}
   else if(a==='ntset'){
     var o=NT();if(!o)return;
     if(k==='on'){o.on=t.dataset.v==='1';if(o.on&&o.lat==null)AndroidBridge.useLocation()}
     else if(k==='delay')o.delay=+t.dataset.v;
     else if(k==='bit')o.mask=(o.mask^(1<<+t.dataset.v))&31;
-    ntSave(o);render();
+    ntSave(o);render(1);
   }
   else if(a==='ntloc'){try{AndroidBridge.useLocation();toast('Mencari lokasi…')}catch(e){}}
-  else if(a==='tmset'){S.tm=S.tm||{};S.tm[k]=t.dataset.v;save();render()}
+  else if(a==='tmset'){S.tm=S.tm||{};S.tm[k]=t.dataset.v;save();render(1)}
   else if(a==='reset'){
-    if(!resetArm){resetArm=true;render();clearTimeout(go.rt);go.rt=setTimeout(function(){resetArm=false;if(view==='setelan')render()},5000)}
-    else{resetArm=false;S.zdone={};save();toast('Catatan zikir dihapus');render()}
+    if(!resetArm){resetArm=true;render(1);clearTimeout(go.rt);go.rt=setTimeout(function(){resetArm=false;if(view==='setelan')render(1)},5000)}
+    else{resetArm=false;S.zdone={};save();toast('Catatan zikir dihapus');render(1)}
   }
 });
 window.addEventListener('hashchange',function(){var h=location.hash.slice(1);if(TABS.some(function(t){return t[0]===h})&&h!==view)go(h)});
